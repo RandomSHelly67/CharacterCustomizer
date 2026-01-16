@@ -223,3 +223,181 @@ for category, btn in pairs(categoryButtons) do
         updateButtonColors()
     end)
 end
+
+--//------------------------------------------------------------------------------------------\\--
+-- APPLY / CLEAR / OUTFIT BUTTON LOGIC
+--//------------------------------------------------------------------------------------------\\--
+
+-- Helper function to parse IDs (comma-separated or single)
+local function parseIDs(input)
+    local ids = {}
+    for id in string.gmatch(input, "%d+") do
+        table.insert(ids, tonumber(id))
+    end
+    return ids
+end
+
+-- Apply Button
+local applyBtn = Instance.new("TextButton")
+applyBtn.Name = "ApplyButton"
+applyBtn.Size = UDim2.new(1, 0, 0, 40)
+applyBtn.Position = UDim2.new(0, 0, 0, 140)
+applyBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 120)
+applyBtn.Text = "Apply"
+applyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+applyBtn.Font = Enum.Font.GothamBold
+applyBtn.TextSize = 16
+applyBtn.Parent = contentFrame
+
+local applyCorner = Instance.new("UICorner")
+applyCorner.CornerRadius = UDim.new(0, 6)
+applyCorner.Parent = applyBtn
+
+applyBtn.MouseButton1Click:Connect(function()
+    local ids = parseIDs(idInput.Text)
+    if #ids == 0 then
+        warn("[GUI] No valid IDs entered!")
+        return
+    end
+
+    local success = false
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    if selectedCategory == "Head" or selectedCategory == "Torso" then
+        for _, id in ipairs(ids) do
+            success = CS:AddAccessory(selectedCategory, id)
+            print("[GUI] Added accessory ID " .. id .. " to " .. selectedCategory .. ":", success)
+        end
+    elseif selectedCategory == "Face" then
+        success = CS:ApplyFace(ids[1])
+        print("[GUI] Applied Face ID " .. ids[1] .. ":", success)
+    elseif selectedCategory == "Shirt" then
+        success = CS:ApplyShirt(ids[1])
+        print("[GUI] Applied Shirt ID " .. ids[1] .. ":", success)
+    elseif selectedCategory == "Pants" then
+        success = CS:ApplyPants(ids[1])
+        print("[GUI] Applied Pants ID " .. ids[1] .. ":", success)
+    end
+end)
+
+-- Clear Button
+local clearBtn = Instance.new("TextButton")
+clearBtn.Name = "ClearButton"
+clearBtn.Size = UDim2.new(1, 0, 0, 40)
+clearBtn.Position = UDim2.new(0, 0, 0, 190)
+clearBtn.BackgroundColor3 = Color3.fromRGB(120, 50, 50)
+clearBtn.Text = "Clear"
+clearBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+clearBtn.Font = Enum.Font.GothamBold
+clearBtn.TextSize = 16
+clearBtn.Parent = contentFrame
+
+local clearCorner = Instance.new("UICorner")
+clearCorner.CornerRadius = UDim.new(0, 6)
+clearCorner.Parent = clearBtn
+
+clearBtn.MouseButton1Click:Connect(function()
+    local character = player.Character or player.CharacterAdded:Wait()
+    if selectedCategory == "Head" or selectedCategory == "Torso" then
+        CS:ClearAccessories(selectedCategory)
+        print("[GUI] Cleared " .. selectedCategory .. " accessories")
+    elseif selectedCategory == "Face" then
+        CS:ClearFace()
+        print("[GUI] Cleared Face")
+    elseif selectedCategory == "Shirt" then
+        CS:ClearShirt()
+        print("[GUI] Cleared Shirt")
+    elseif selectedCategory == "Pants" then
+        CS:ClearPants()
+        print("[GUI] Cleared Pants")
+    end
+end)
+
+-- Outfit Buttons Container
+local outfitFrame = Instance.new("Frame")
+outfitFrame.Size = UDim2.new(1, 0, 0, 120)
+outfitFrame.Position = UDim2.new(0, 0, 0, 250)
+outfitFrame.BackgroundTransparency = 1
+outfitFrame.Parent = contentFrame
+
+-- Save Outfit
+local saveBtn = Instance.new("TextButton")
+saveBtn.Name = "SaveButton"
+saveBtn.Size = UDim2.new(0.48, 0, 0, 40)
+saveBtn.Position = UDim2.new(0, 0, 0, 0)
+saveBtn.BackgroundColor3 = Color3.fromRGB(50, 120, 50)
+saveBtn.Text = "Save Outfit"
+saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+saveBtn.Font = Enum.Font.GothamBold
+saveBtn.TextSize = 14
+saveBtn.Parent = outfitFrame
+
+local saveCorner = Instance.new("UICorner")
+saveCorner.CornerRadius = UDim.new(0, 6)
+saveCorner.Parent = saveBtn
+
+saveBtn.MouseButton1Click:Connect(function()
+    local outfitName = idInput.Text
+    if outfitName == "" then
+        warn("[GUI] Outfit name cannot be empty!")
+        return
+    end
+    local success = OS:SaveOutfit(outfitName)
+    print("[GUI] Save outfit '" .. outfitName .. "':", success)
+end)
+
+-- Load Outfit
+local loadBtn = Instance.new("TextButton")
+loadBtn.Name = "LoadButton"
+loadBtn.Size = UDim2.new(0.48, 0, 0, 40)
+loadBtn.Position = UDim2.new(0.52, 0, 0, 0)
+loadBtn.BackgroundColor3 = Color3.fromRGB(50, 120, 120)
+loadBtn.Text = "Load Outfit"
+loadBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadBtn.Font = Enum.Font.GothamBold
+loadBtn.TextSize = 14
+loadBtn.Parent = outfitFrame
+
+local loadCorner = Instance.new("UICorner")
+loadCorner.CornerRadius = UDim.new(0, 6)
+loadCorner.Parent = loadBtn
+
+loadBtn.MouseButton1Click:Connect(function()
+    local outfitName = idInput.Text
+    if outfitName == "" then
+        warn("[GUI] Outfit name cannot be empty!")
+        return
+    end
+    local outfit = OS:LoadOutfit(outfitName)
+    if outfit then
+        print("[GUI] Loaded outfit '" .. outfitName .. "' successfully")
+    else
+        warn("[GUI] Failed to load outfit '" .. outfitName .. "'")
+    end
+end)
+
+-- Delete Outfit
+local deleteBtn = Instance.new("TextButton")
+deleteBtn.Name = "DeleteButton"
+deleteBtn.Size = UDim2.new(1, 0, 0, 40)
+deleteBtn.Position = UDim2.new(0, 0, 0, 70)
+deleteBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
+deleteBtn.Text = "Delete Outfit"
+deleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+deleteBtn.Font = Enum.Font.GothamBold
+deleteBtn.TextSize = 14
+deleteBtn.Parent = outfitFrame
+
+local deleteCorner = Instance.new("UICorner")
+deleteCorner.CornerRadius = UDim.new(0, 6)
+deleteCorner.Parent = deleteBtn
+
+deleteBtn.MouseButton1Click:Connect(function()
+    local outfitName = idInput.Text
+    if outfitName == "" then
+        warn("[GUI] Outfit name cannot be empty!")
+        return
+    end
+    local success = OS:DeleteOutfit(outfitName)
+    print("[GUI] Delete outfit '" .. outfitName .. "':", success)
+end)
