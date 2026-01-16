@@ -317,20 +317,22 @@ function CharacterService.RemoveAccessory(accessoryId, category)
     
     -- Remove from character
     for _, accessory in pairs(character:GetChildren()) do
-        if accessory:IsA("Accessory") then
-            local handle = accessory:FindFirstChild("Handle")
-            if handle then
-                local meshId = handle:FindFirstChildOfClass("SpecialMesh")?.MeshId or ""
-                if meshId:match(tostring(id)) then
-                    accessory:Destroy()
-                    CharacterService.ItemMetadata[tostring(id)] = nil
-                    print("[CharacterService] Removed accessory: " .. id)
-                    return true
-                end
+        -- Remove from character
+for _, accessory in pairs(character:GetChildren()) do
+    if accessory:IsA("Accessory") then
+        local handle = accessory:FindFirstChild("Handle")
+        if handle then
+            local mesh = handle:FindFirstChildOfClass("SpecialMesh")
+            local meshId = mesh and mesh.MeshId or ""
+            if meshId:match(tostring(id)) then
+                accessory:Destroy()
+                CharacterService.ItemMetadata[tostring(id)] = nil
+                print("[CharacterService] Removed accessory: " .. id)
+                return true
             end
         end
     end
-    
+end
     return false
 end
 
