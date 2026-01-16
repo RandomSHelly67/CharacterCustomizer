@@ -32,6 +32,9 @@ end
 local CharacterService = requireModule("CharacterService")
 local OutfitService = requireModule("OutfitService")
 
+-- Pass CharacterService into OutfitService
+OutfitService.Init(CharacterService)
+
 print("[Bootstrap] All modules loaded successfully")
 
 -- Optionally return modules for executor
