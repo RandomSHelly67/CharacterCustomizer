@@ -295,7 +295,8 @@ function CharacterService.RemoveAccessory(accessoryId, category)
     local character = Players.LocalPlayer.Character
     if not character then return false end
     
-    category = category or CharacterService.ItemMetadata[tostring(id)]?.category or "Head"
+    local metadata = CharacterService.ItemMetadata[tostring(id)]
+    category = category or (metadata and metadata.category) or "Head"
     
     -- Remove from storage
     if category == "Head" then
