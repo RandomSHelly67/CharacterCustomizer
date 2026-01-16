@@ -21,8 +21,8 @@ local function requireModule(name)
     return result
 end
 
-local CharacterService = requireModule("CharacterService")
-
 local State = requireModule("State")
+local CharacterService = requireModule("CharacterService")
+-- later: OutfitService, UI
 
 print("[Bootstrap] Finished successfully")
