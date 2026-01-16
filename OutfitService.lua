@@ -1,159 +1,104 @@
--- OutfitService.lua
-local OutfitService = {}
+-- bootstrap.lua
+local BASE_URL = "https://raw.githubusercontent.com/RandomSHelly67/CharacterCustomizer/main/"
+local Loaded = {}
 
-OutfitService.CharacterService = nil
-OutfitService.OUTFIT_FOLDER = "CharacterCustomizer/Outfits/"
-
-local HttpService = game:GetService("HttpService")
-
--- Initialize with CharacterService
-function OutfitService.Init(CharacterService)
-    OutfitService.CharacterService = CharacterService
-    
-    -- Ensure folders exist
-    if not isfolder("CharacterCustomizer") then
-        makefolder("CharacterCustomizer")
-    end
-    if not isfolder(OutfitService.OUTFIT_FOLDER) then
-        makefolder(OutfitService.OUTFIT_FOLDER)
-    end
-    
-    print("[OutfitService] Initialized with CharacterService")
+-- Helper to print with a prefix
+local function log(msg)
+    print("[Bootstrap] " .. msg)
 end
 
--- Save current outfit to JSON file
-function OutfitService.SaveOutfit(name)
-    local cs = OutfitService.CharacterService
-    if not cs then 
-        warn("[OutfitService] CharacterService not initialized")
-        return false 
-    end
+-- Load a module from GitHub
+local function requireModule(name)
+    -- Add cache buster to force fresh download
+    local cacheBust = "?v=" .. tostring(math.random(100000, 999999))
+    local url = BASE_URL .. name .. ".lua" .. cacheBust
+    log("Fetching module: " .. name .. " | URL: " .. url)
     
-    local outfitData = {
-        Head = cs.Head,
-        Torso = cs.Torso,
-        Face = cs.Face,
-        FaceTextureId = cs.FaceTextureId,
-        Shirt = cs.Shirt,
-        ShirtTemplateId = cs.ShirtTemplateId,
-        Pants = cs.Pants,
-        PantsTemplateId = cs.PantsTemplateId
-    }
-    
-    local success, err = pcall(function()
-        local json = HttpService:JSONEncode(outfitData)
-        writefile(OutfitService.OUTFIT_FOLDER .. name .. ".json", json)
+    local success, src = pcall(function()
+        return game:HttpGet(url)
     end)
     
-    if success then
-        print("[OutfitService] Saved outfit: " .. name)
-    else
-        warn("[OutfitService] Failed to save outfit: " .. tostring(err))
+    if not success then
+        error("[Bootstrap] Failed to fetch module: " .. name .. "\nError: " .. tostring(src))
     end
     
-    return success
-end
-
--- Load outfit from JSON file and apply to character
-function OutfitService.LoadOutfit(name)
-    local cs = OutfitService.CharacterService
-    if not cs then 
-        warn("[OutfitService] CharacterService not initialized")
-        return false 
+    log("Module source fetched: " .. name)
+    
+    local fn, err = loadstring(src)
+    if not fn then
+        error("[Bootstrap] Failed to load module: " .. name .. "\nError: " .. tostring(err))
     end
     
-    local success, result = pcall(function()
-        local json = readfile(OutfitService.OUTFIT_FOLDER .. name .. ".json")
-        return HttpService:JSONDecode(json)
+    log("Module compiled successfully: " .. name)
+    
+    local result
+    local ok, runErr = pcall(function()
+        result = fn()
     end)
     
-    if not success or not result then 
-        warn("[OutfitService] Failed to load outfit: " .. name)
-        return false 
+    if not ok then
+        error("[Bootstrap] Error running module: " .. name .. "\nError: " .. tostring(runErr))
     end
     
-    -- Update CharacterService storage
-    cs.Head = result.Head or {}
-    cs.Torso = result.Torso or {}
-    cs.Face = result.Face
-    cs.FaceTextureId = result.FaceTextureId
-    cs.Shirt = result.Shirt
-    cs.ShirtTemplateId = result.ShirtTemplateId
-    cs.Pants = result.Pants
-    cs.PantsTemplateId = result.PantsTemplateId
-    
-    local character = game.Players.LocalPlayer.Character
-    if character then
-        -- Clear existing accessories and clothing
-        cs.ClearCharacter(character)
-        
-        task.wait(cs.Time)
-        
-        -- Apply head accessories
-        for _, id in ipairs(cs.Head) do
-            cs.AddAccessoryToCharacter(id, character.Head)
-        end
-        
-        -- Apply torso accessories
-        for _, id in ipairs(cs.Torso) do
-            local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
-            if torso then
-                cs.AddAccessoryToCharacter(id, torso)
-            end
-        end
-        
-        -- Apply face (use the stored Face ID, not FaceTextureId)
-        if cs.Face then
-            cs.ApplyFace(cs.Face, character)
-        end
-        
-        -- Apply shirt (use the stored Shirt ID, not ShirtTemplateId)
-        if cs.Shirt then
-            cs.ApplyShirt(cs.Shirt, character)
-        end
-        
-        -- Apply pants (use the stored Pants ID, not PantsTemplateId)
-        if cs.Pants then
-            cs.ApplyPants(cs.Pants, character)
-        end
+    if not result then
+        error("[Bootstrap] Module " .. name .. " did not return anything")
     end
     
-    print("[OutfitService] Loaded outfit: " .. name)
-    return true
+    Loaded[name] = result
+    log("Module loaded successfully: " .. name)
+    
+    return result
 end
 
--- Delete outfit file
-function OutfitService.DeleteOutfit(name)
-    local success = pcall(function()
-        delfile(OutfitService.OUTFIT_FOLDER .. name .. ".json")
-    end)
-    
-    if success then
-        print("[OutfitService] Deleted outfit: " .. name)
-    else
-        warn("[OutfitService] Failed to delete outfit: " .. name)
-    end
-    
-    return success
+-- MAIN BOOTSTRAP
+log("Starting bootstrap...")
+
+-- Load modules
+local CharacterService = requireModule("CharacterService")
+local OutfitService = requireModule("OutfitService")
+local ItemEditorService = requireModule("ItemEditorService")
+
+-- Initialize CharacterService (sets up respawn handler)
+log("Initializing CharacterService...")
+local success, err = pcall(function()
+    CharacterService.Init()
+end)
+
+if not success then
+    error("[Bootstrap] Failed to initialize CharacterService\nError: " .. tostring(err))
 end
 
--- List all saved outfit names
-function OutfitService.ListOutfits()
-    local outfits = {}
-    local success, files = pcall(function()
-        return listfiles(OutfitService.OUTFIT_FOLDER)
-    end)
-    
-    if success and files then
-        for _, filePath in ipairs(files) do
-            local fileName = filePath:match("([^/\\]+)%.json$")
-            if fileName then
-                table.insert(outfits, fileName)
-            end
-        end
-    end
-    
-    return outfits
+log("CharacterService initialized successfully")
+
+-- Initialize OutfitService with CharacterService and ItemEditorService
+log("Initializing OutfitService...")
+success, err = pcall(function()
+    OutfitService.Init(CharacterService, ItemEditorService)
+end)
+
+if not success then
+    error("[Bootstrap] Failed to initialize OutfitService\nError: " .. tostring(err))
 end
 
-return OutfitService
+log("OutfitService initialized successfully")
+
+-- Initialize ItemEditorService with CharacterService
+log("Initializing ItemEditorService with CharacterService...")
+success, err = pcall(function()
+    ItemEditorService.Init(CharacterService)
+end)
+
+if not success then
+    error("[Bootstrap] Failed to initialize ItemEditorService\nError: " .. tostring(err))
+end
+
+log("ItemEditorService initialized successfully")
+log("All modules loaded successfully! Ready to use.")
+log("Press RightShift to toggle GUI (once GUI is loaded)")
+
+-- Return modules for use
+return {
+    CharacterService = CharacterService,
+    OutfitService = OutfitService,
+    ItemEditorService = ItemEditorService
+}
