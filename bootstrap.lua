@@ -11,56 +11,77 @@ end
 local function requireModule(name)
     local url = BASE_URL .. name .. ".lua"
     log("Fetching module: " .. name .. " | URL: " .. url)
-
+    
     local success, src = pcall(function()
         return game:HttpGet(url)
     end)
+    
     if not success then
         error("[Bootstrap] Failed to fetch module: " .. name .. "\nError: " .. tostring(src))
     end
+    
     log("Module source fetched: " .. name)
-
+    
     local fn, err = loadstring(src)
     if not fn then
         error("[Bootstrap] Failed to load module: " .. name .. "\nError: " .. tostring(err))
     end
+    
     log("Module compiled successfully: " .. name)
-
+    
     local result
     local ok, runErr = pcall(function()
         result = fn()
     end)
+    
     if not ok then
         error("[Bootstrap] Error running module: " .. name .. "\nError: " .. tostring(runErr))
     end
-
+    
     if not result then
         error("[Bootstrap] Module " .. name .. " did not return anything")
     end
-
+    
     Loaded[name] = result
     log("Module loaded successfully: " .. name)
+    
     return result
 end
 
--- MAIN
+-- MAIN BOOTSTRAP
 log("Starting bootstrap...")
 
+-- Load modules
 local CharacterService = requireModule("CharacterService")
 local OutfitService = requireModule("OutfitService")
 
-log("Initializing OutfitService with CharacterService...")
+-- Initialize CharacterService (sets up respawn handler)
+log("Initializing CharacterService...")
 local success, err = pcall(function()
+    CharacterService.Init()
+end)
+
+if not success then
+    error("[Bootstrap] Failed to initialize CharacterService\nError: " .. tostring(err))
+end
+
+log("CharacterService initialized successfully")
+
+-- Initialize OutfitService with CharacterService
+log("Initializing OutfitService with CharacterService...")
+success, err = pcall(function()
     OutfitService.Init(CharacterService)
 end)
+
 if not success then
     error("[Bootstrap] Failed to initialize OutfitService\nError: " .. tostring(err))
 end
+
 log("OutfitService initialized successfully")
-
 log("All modules loaded successfully! Ready to use.")
+log("Press RightShift to toggle GUI (once GUI is loaded)")
 
--- Optional: return modules for executor
+-- Return modules for use
 return {
     CharacterService = CharacterService,
     OutfitService = OutfitService
