@@ -56,6 +56,7 @@ log("Starting bootstrap...")
 -- Load modules
 local CharacterService = requireModule("CharacterService")
 local OutfitService = requireModule("OutfitService")
+local ItemEditorService = requireModule("ItemEditorService")
 
 -- Initialize CharacterService (sets up respawn handler)
 log("Initializing CharacterService...")
@@ -80,11 +81,24 @@ if not success then
 end
 
 log("OutfitService initialized successfully")
+
+-- Initialize ItemEditorService with CharacterService
+log("Initializing ItemEditorService with CharacterService...")
+success, err = pcall(function()
+    ItemEditorService.Init(CharacterService)
+end)
+
+if not success then
+    error("[Bootstrap] Failed to initialize ItemEditorService\nError: " .. tostring(err))
+end
+
+log("ItemEditorService initialized successfully")
 log("All modules loaded successfully! Ready to use.")
 log("Press RightShift to toggle GUI (once GUI is loaded)")
 
 -- Return modules for use
 return {
     CharacterService = CharacterService,
-    OutfitService = OutfitService
+    OutfitService = OutfitService,
+    ItemEditorService = ItemEditorService
 }
