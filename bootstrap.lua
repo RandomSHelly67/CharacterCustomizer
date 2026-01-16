@@ -9,7 +9,9 @@ end
 
 -- Load a module from GitHub
 local function requireModule(name)
-    local url = BASE_URL .. name .. ".lua"
+    -- Add cache buster to force fresh download
+    local cacheBust = "?v=" .. tostring(math.random(100000, 999999))
+    local url = BASE_URL .. name .. ".lua" .. cacheBust
     log("Fetching module: " .. name .. " | URL: " .. url)
     
     local success, src = pcall(function()
