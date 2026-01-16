@@ -21,9 +21,13 @@ local function requireModule(name)
     return result
 end
 
-local State = requireModule("State")
+-- Existing bootstrap code...
 local CharacterService = requireModule("CharacterService")
 local OutfitService = requireModule("OutfitService")
+local State = requireModule("State")
+
+-- Load GUI
+local GUI = requireModule("GUI")
 
 -- Save current character as "MyOutfit"
 OutfitService.SaveOutfit("MyOutfit", {
