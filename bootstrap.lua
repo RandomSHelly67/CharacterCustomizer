@@ -21,6 +21,8 @@ local function requireModule(name)
     return result
 end
 
+local CharacterService = requireModule("CharacterService")
+
 local State = requireModule("State")
 
 print("[Bootstrap] Finished successfully")
