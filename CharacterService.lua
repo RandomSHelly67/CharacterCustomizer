@@ -1,4 +1,4 @@
--- CharacterService.lua - Phase 1 Complete
+-- CharacterService.lua - Phase 1 Complete (FIXED)
 local CharacterService = {}
 
 local Players = game:GetService("Players")
@@ -25,6 +25,7 @@ CharacterService.Favorites = {} -- Favorite items with names
 
 -- Internal
 CharacterService._characterConnection = nil
+CharacterService._isApplying = false -- ADDED: Prevents infinite loops
 
 --[[ UTILITY FUNCTIONS ]]--
 
@@ -41,6 +42,9 @@ local function deepCopy(original)
 end
 
 local function saveToHistory()
+    -- Don't save history if we're applying character (prevents loops)
+    if CharacterService._isApplying then return end
+    
     local state = {
         Head = deepCopy(CharacterService.Head),
         Torso = deepCopy(CharacterService.Torso),
@@ -346,7 +350,7 @@ function CharacterService.ClearHead()
                 local handle = accessory:FindFirstChild("Handle")
                 if handle then
                     local attachment = handle:FindFirstChildOfClass("Attachment")
-                    if attachment and attachment.Name:match("Hat") or attachment.Name:match("Hair") or attachment.Name:match("Face") then
+                    if attachment and (attachment.Name:match("Hat") or attachment.Name:match("Hair") or attachment.Name:match("Face")) then
                         accessory:Destroy()
                     end
                 end
@@ -606,31 +610,71 @@ function CharacterService.ClearCharacter(character)
     return true
 end
 
+-- FIXED: This function now prevents infinite loops
 function CharacterService.OnCharacterAdded(character)
-    task.wait(CharacterService.Time)
-    
-    for _, id in ipairs(CharacterService.Head) do
-        CharacterService.AddAccessoryToCharacter(id, character.Head)
+    -- Prevent re-entry
+    if CharacterService._isApplying then 
+        return 
     end
     
+    CharacterService._isApplying = true
+    
+    task.wait(CharacterService.Time)
+    
+    -- Apply head accessories
+    for _, id in ipairs(CharacterService.Head) do
+        task.spawn(function()
+            CharacterService.AddAccessoryToCharacter(id, character.Head)
+        end)
+    end
+    
+    -- Apply torso accessories
     for _, id in ipairs(CharacterService.Torso) do
-        local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
-        if torso then
-            CharacterService.AddAccessoryToCharacter(id, torso)
+        task.spawn(function()
+            local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+            if torso then
+                CharacterService.AddAccessoryToCharacter(id, torso)
+            end
+        end)
+    end
+    
+    -- Apply face directly (without calling ApplyFace to avoid history save)
+    if CharacterService.FaceTextureId then
+        local head = character:FindFirstChild("Head")
+        if head then
+            local existingFace = head:FindFirstChild("face")
+            if existingFace then existingFace:Destroy() end
+
+            local face = Instance.new("Decal")
+            face.Name = "face"
+            face.Texture = "rbxassetid://" .. tostring(CharacterService.FaceTextureId)
+            face.Face = Enum.NormalId.Front
+            face.Parent = head
         end
     end
     
-    if CharacterService.FaceTextureId then
-        CharacterService.ApplyFace(CharacterService.Face, character)
-    end
-    
+    -- Apply shirt directly
     if CharacterService.ShirtTemplateId then
-        CharacterService.ApplyShirt(CharacterService.Shirt, character)
+        local existingShirt = character:FindFirstChildOfClass("Shirt")
+        if existingShirt then existingShirt:Destroy() end
+
+        local shirt = Instance.new("Shirt")
+        shirt.ShirtTemplate = "rbxassetid://" .. tostring(CharacterService.ShirtTemplateId)
+        shirt.Parent = character
     end
     
+    -- Apply pants directly
     if CharacterService.PantsTemplateId then
-        CharacterService.ApplyPants(CharacterService.Pants, character)
+        local existingPants = character:FindFirstChildOfClass("Pants")
+        if existingPants then existingPants:Destroy() end
+
+        local pants = Instance.new("Pants")
+        pants.PantsTemplate = "rbxassetid://" .. tostring(CharacterService.PantsTemplateId)
+        pants.Parent = character
     end
+    
+    task.wait(0.1)
+    CharacterService._isApplying = false
 end
 
 function CharacterService.Init()
