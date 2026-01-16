@@ -1,66 +1,43 @@
 -- OutfitService.lua
 local OutfitService = {}
 local HttpService = game:GetService("HttpService")
-
 local OUTFIT_FOLDER = "CharacterCustomizer/Outfits/"
 
 -- Ensure folder exists
-if not isfolder("CharacterCustomizer") then
-    makefolder("CharacterCustomizer")
-end
-if not isfolder(OUTFIT_FOLDER) then
-    makefolder(OUTFIT_FOLDER)
-end
+if not isfolder("CharacterCustomizer") then makefolder("CharacterCustomizer") end
+if not isfolder(OUTFIT_FOLDER) then makefolder(OUTFIT_FOLDER) end
 
--- Save an outfit
-function OutfitService.SaveOutfit(outfitName, outfitData)
-    local success, err = pcall(function()
-        local json = HttpService:JSONEncode(outfitData)
-        writefile(OUTFIT_FOLDER .. outfitName .. ".json", json)
+-- Save Outfit
+function OutfitService:SaveOutfit(name, outfit)
+    local success, _ = pcall(function()
+        writefile(OUTFIT_FOLDER .. name .. ".json", HttpService:JSONEncode(outfit))
     end)
-    if not success then
-        warn("Failed to save outfit:", err)
-    end
     return success
 end
 
--- Load an outfit
-function OutfitService.LoadOutfit(outfitName)
+-- Load Outfit
+function OutfitService:LoadOutfit(name)
     local success, result = pcall(function()
-        local json = readfile(OUTFIT_FOLDER .. outfitName .. ".json")
-        return HttpService:JSONDecode(json)
+        return HttpService:JSONDecode(readfile(OUTFIT_FOLDER .. name .. ".json"))
     end)
-    if success then
-        return result
-    else
-        warn("Failed to load outfit:", result)
-        return nil
-    end
+    if success then return result end
+    return nil
 end
 
--- Delete an outfit
-function OutfitService.DeleteOutfit(outfitName)
-    local success = pcall(function()
-        delfile(OUTFIT_FOLDER .. outfitName .. ".json")
-    end)
-    if not success then
-        warn("Failed to delete outfit:", outfitName)
-    end
+-- Delete Outfit
+function OutfitService:DeleteOutfit(name)
+    local success, _ = pcall(function() delfile(OUTFIT_FOLDER .. name .. ".json") end)
     return success
 end
 
--- List all outfits
-function OutfitService.ListOutfits()
+-- List Outfits
+function OutfitService:ListOutfits()
     local outfits = {}
-    local success, files = pcall(function()
-        return listfiles(OUTFIT_FOLDER)
-    end)
+    local success, files = pcall(function() return listfiles(OUTFIT_FOLDER) end)
     if success and files then
-        for _, filePath in ipairs(files) do
-            local fileName = filePath:match("([^/\\]+)%.json$")
-            if fileName then
-                table.insert(outfits, fileName)
-            end
+        for _, file in ipairs(files) do
+            local fname = file:match("([^/\\]+)%.json$")
+            if fname then table.insert(outfits, fname) end
         end
     end
     return outfits
