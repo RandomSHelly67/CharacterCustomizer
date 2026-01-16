@@ -1,7 +1,6 @@
 -- OutfitService.lua
 local OutfitService = {}
 local HttpService = game:GetService("HttpService")
-local CharacterService = require(game:GetService("Players").LocalPlayer:WaitForChild("Character"))
 
 local OUTFIT_FOLDER = "CharacterCustomizer/Outfits/"
 
@@ -9,16 +8,22 @@ local OUTFIT_FOLDER = "CharacterCustomizer/Outfits/"
 if not isfolder("CharacterCustomizer") then makefolder("CharacterCustomizer") end
 if not isfolder(OUTFIT_FOLDER) then makefolder(OUTFIT_FOLDER) end
 
+-- Module will receive CharacterService from bootstrap
+function OutfitService.Init(characterServiceModule)
+    OutfitService.CharacterService = characterServiceModule
+end
+
 function OutfitService.SaveOutfit(name)
+    local cs = OutfitService.CharacterService
     local data = {
-        Head = CharacterService.Head,
-        Torso = CharacterService.Torso,
-        Face = CharacterService.Face,
-        FaceTextureId = CharacterService.FaceTextureId,
-        Shirt = CharacterService.Shirt,
-        ShirtTemplateId = CharacterService.ShirtTemplateId,
-        Pants = CharacterService.Pants,
-        PantsTemplateId = CharacterService.PantsTemplateId
+        Head = cs.Head,
+        Torso = cs.Torso,
+        Face = cs.Face,
+        FaceTextureId = cs.FaceTextureId,
+        Shirt = cs.Shirt,
+        ShirtTemplateId = cs.ShirtTemplateId,
+        Pants = cs.Pants,
+        PantsTemplateId = cs.PantsTemplateId
     }
     local success, _ = pcall(function()
         writefile(OUTFIT_FOLDER .. name .. ".json", HttpService:JSONEncode(data))
@@ -27,23 +32,24 @@ function OutfitService.SaveOutfit(name)
 end
 
 function OutfitService.LoadOutfit(name)
+    local cs = OutfitService.CharacterService
     local success, data = pcall(function()
         local json = readfile(OUTFIT_FOLDER .. name .. ".json")
         return HttpService:JSONDecode(json)
     end)
     if success and data then
-        CharacterService.Head = data.Head or {}
-        CharacterService.Torso = data.Torso or {}
-        CharacterService.Face = data.Face
-        CharacterService.FaceTextureId = data.FaceTextureId
-        CharacterService.Shirt = data.Shirt
-        CharacterService.ShirtTemplateId = data.ShirtTemplateId
-        CharacterService.Pants = data.Pants
-        CharacterService.PantsTemplateId = data.PantsTemplateId
+        cs.Head = data.Head or {}
+        cs.Torso = data.Torso or {}
+        cs.Face = data.Face
+        cs.FaceTextureId = data.FaceTextureId
+        cs.Shirt = data.Shirt
+        cs.ShirtTemplateId = data.ShirtTemplateId
+        cs.Pants = data.Pants
+        cs.PantsTemplateId = data.PantsTemplateId
 
         local character = game.Players.LocalPlayer.Character
         if character then
-            CharacterService.OnCharacterAdded(character)
+            cs.OnCharacterAdded(character)
         end
         return true
     end
