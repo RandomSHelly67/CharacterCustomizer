@@ -1,4 +1,4 @@
--- OutfitService.lua
+-- OutfitService.lua - FIXED VERSION
 local OutfitService = {}
 
 OutfitService.CharacterService = nil
@@ -7,12 +7,10 @@ OutfitService.OUTFIT_FOLDER = "CharacterCustomizer/Outfits/"
 
 local HttpService = game:GetService("HttpService")
 
--- Initialize with CharacterService and ItemEditorService
 function OutfitService.Init(CharacterService, ItemEditorService)
     OutfitService.CharacterService = CharacterService
     OutfitService.ItemEditorService = ItemEditorService
     
-    -- Ensure folders exist
     if not isfolder("CharacterCustomizer") then
         makefolder("CharacterCustomizer")
     end
@@ -23,10 +21,9 @@ function OutfitService.Init(CharacterService, ItemEditorService)
     print("[OutfitService] Initialized with CharacterService")
 end
 
--- Save current outfit to JSON file
+-- FIXED: Save with converted IDs
 function OutfitService.SaveOutfit(name)
     local cs = OutfitService.CharacterService
-    local ie = OutfitService.ItemEditorService
     if not cs then 
         warn("[OutfitService] CharacterService not initialized")
         return false 
@@ -41,7 +38,10 @@ function OutfitService.SaveOutfit(name)
         ShirtTemplateId = cs.ShirtTemplateId,
         Pants = cs.Pants,
         PantsTemplateId = cs.PantsTemplateId,
-        Adjustments = ie and ie.Adjustments or {}
+        Headless = cs.Headless or false,
+        KorbloxRight = cs.KorbloxRight or false,
+        KorbloxLeft = cs.KorbloxLeft or false,
+        Adjustments = (OutfitService.ItemEditorService and OutfitService.ItemEditorService.Adjustments) or {}
     }
     
     local success, err = pcall(function()
@@ -58,7 +58,7 @@ function OutfitService.SaveOutfit(name)
     return success
 end
 
--- Load outfit from JSON file and apply to character
+-- FIXED: Load with proper ID handling
 function OutfitService.LoadOutfit(name)
     local cs = OutfitService.CharacterService
     local ie = OutfitService.ItemEditorService
@@ -77,7 +77,7 @@ function OutfitService.LoadOutfit(name)
         return false 
     end
     
-    -- Update CharacterService storage
+    -- Update CharacterService storage with CONVERTED IDs
     cs.Head = result.Head or {}
     cs.Torso = result.Torso or {}
     cs.Face = result.Face
@@ -86,10 +86,12 @@ function OutfitService.LoadOutfit(name)
     cs.ShirtTemplateId = result.ShirtTemplateId
     cs.Pants = result.Pants
     cs.PantsTemplateId = result.PantsTemplateId
+    cs.Headless = result.Headless or false
+    cs.KorbloxRight = result.KorbloxRight or false
+    cs.KorbloxLeft = result.KorbloxLeft or false
     
     -- Load adjustments
     if ie and result.Adjustments then
-        -- Convert Vector3 tables back to Vector3 objects
         for id, adj in pairs(result.Adjustments) do
             if adj.position then
                 adj.position = Vector3.new(adj.position.X, adj.position.Y, adj.position.Z)
@@ -106,40 +108,15 @@ function OutfitService.LoadOutfit(name)
     
     local character = game.Players.LocalPlayer.Character
     if character then
-        -- Clear existing accessories and clothing
+        -- Clear existing
         cs.ClearCharacter(character)
         
         task.wait(cs.Time)
         
-        -- Apply head accessories
-        for _, id in ipairs(cs.Head) do
-            cs.AddAccessoryToCharacter(id, character.Head)
-        end
+        -- Reapply everything using OnCharacterAdded which handles converted IDs properly
+        cs.OnCharacterAdded(character)
         
-        -- Apply torso accessories
-        for _, id in ipairs(cs.Torso) do
-            local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
-            if torso then
-                cs.AddAccessoryToCharacter(id, torso)
-            end
-        end
-        
-        -- Apply face (use the stored Face ID, not FaceTextureId)
-        if cs.Face then
-            cs.ApplyFace(cs.Face, character)
-        end
-        
-        -- Apply shirt (use the stored Shirt ID, not ShirtTemplateId)
-        if cs.Shirt then
-            cs.ApplyShirt(cs.Shirt, character)
-        end
-        
-        -- Apply pants (use the stored Pants ID, not PantsTemplateId)
-        if cs.Pants then
-            cs.ApplyPants(cs.Pants, character)
-        end
-        
-        -- Apply adjustments after a short delay
+        -- Apply adjustments after a delay
         if ie then
             task.wait(0.2)
             ie.ApplyAllAdjustments()
@@ -150,7 +127,6 @@ function OutfitService.LoadOutfit(name)
     return true
 end
 
--- Delete outfit file
 function OutfitService.DeleteOutfit(name)
     local success = pcall(function()
         delfile(OutfitService.OUTFIT_FOLDER .. name .. ".json")
@@ -165,7 +141,6 @@ function OutfitService.DeleteOutfit(name)
     return success
 end
 
--- List all saved outfit names
 function OutfitService.ListOutfits()
     local outfits = {}
     local success, files = pcall(function()
