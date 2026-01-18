@@ -72,14 +72,14 @@ ItemEditorService.Init(CharacterService)
 log("Initializing GuiService...")
 GuiService.Init(CharacterService, OutfitService, ItemEditorService)
 
-log("All modules loaded successfully! Press Right Shift to toggle GUI.")
+log("All modules loaded successfully! Press Right Shift to toggle GUI. v1")
 
 _G.CharacterCustomizerLoaded = true
 _G.CharacterCustomizerModules = {
     CharacterService = CharacterService,
     OutfitService = OutfitService,
     ItemEditorService = ItemEditorService,
-    GuiService = GuiService -- NEW
+    GuiService = GuiService
 }
 
 return _G.CharacterCustomizerModules
