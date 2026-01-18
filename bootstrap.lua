@@ -1,5 +1,4 @@
--- bootstrap.lua
--- Prevent multiple loads
+-- bootstrap.lua - UPDATED
 if _G.CharacterCustomizerLoaded then
     warn("[Bootstrap] Already loaded! Returning cached modules.")
     return _G.CharacterCustomizerModules
@@ -15,7 +14,7 @@ end
 local function requireModule(name)
     local cacheBust = "?v=" .. tostring(math.random(100000, 999999))
     local url = BASE_URL .. name .. ".lua" .. cacheBust
-    log("Fetching module: " .. name .. " | URL: " .. url)
+    log("Fetching module: " .. name)
     
     local success, src = pcall(function()
         return game:HttpGet(url)
@@ -25,14 +24,10 @@ local function requireModule(name)
         error("[Bootstrap] Failed to fetch module: " .. name .. "\nError: " .. tostring(src))
     end
     
-    log("Module source fetched: " .. name)
-    
     local fn, err = loadstring(src)
     if not fn then
         error("[Bootstrap] Failed to load module: " .. name .. "\nError: " .. tostring(err))
     end
-    
-    log("Module compiled successfully: " .. name)
     
     local result
     local ok, runErr = pcall(function()
@@ -59,45 +54,32 @@ log("Starting bootstrap...")
 local CharacterService = requireModule("CharacterService")
 local OutfitService = requireModule("OutfitService")
 local ItemEditorService = requireModule("ItemEditorService")
+local GuiService = requireModule("GuiService") -- NEW
 
 -- Initialize CharacterService
 log("Initializing CharacterService...")
-local success, err = pcall(function()
-    CharacterService.Init()
-end)
-if not success then
-    error("[Bootstrap] Failed to initialize CharacterService\nError: " .. tostring(err))
-end
-log("CharacterService initialized successfully")
+CharacterService.Init()
 
 -- Initialize OutfitService
-log("Initializing OutfitService with CharacterService...")
-success, err = pcall(function()
-    OutfitService.Init(CharacterService)
-end)
-if not success then
-    error("[Bootstrap] Failed to initialize OutfitService\nError: " .. tostring(err))
-end
-log("OutfitService initialized successfully")
+log("Initializing OutfitService...")
+OutfitService.Init(CharacterService, ItemEditorService)
 
 -- Initialize ItemEditorService
-log("Initializing ItemEditorService with CharacterService...")
-success, err = pcall(function()
-    ItemEditorService.Init(CharacterService)
-end)
-if not success then
-    error("[Bootstrap] Failed to initialize ItemEditorService\nError: " .. tostring(err))
-end
-log("ItemEditorService initialized successfully")
+log("Initializing ItemEditorService...")
+ItemEditorService.Init(CharacterService)
 
-log("All modules loaded successfully! Ready to use.")
+-- Initialize GuiService (NEW)
+log("Initializing GuiService...")
+GuiService.Init(CharacterService, OutfitService, ItemEditorService)
 
--- Store in global to prevent re-loading
+log("All modules loaded successfully! Press Right Shift to toggle GUI.")
+
 _G.CharacterCustomizerLoaded = true
 _G.CharacterCustomizerModules = {
     CharacterService = CharacterService,
     OutfitService = OutfitService,
-    ItemEditorService = ItemEditorService
+    ItemEditorService = ItemEditorService,
+    GuiService = GuiService -- NEW
 }
 
 return _G.CharacterCustomizerModules
