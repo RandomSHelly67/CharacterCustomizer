@@ -16,6 +16,11 @@ CharacterService.Shirt = nil
 CharacterService.ShirtTemplateId = nil
 CharacterService.Pants = nil
 CharacterService.PantsTemplateId = nil
+CharacterService.Headless = false
+CharacterService.KorbloxRight = false
+CharacterService.KorbloxLeft = false
+CharacterService.OriginalRightLeg = nil
+CharacterService.OriginalLeftLeg = nil
 
 -- Advanced Storage
 CharacterService.ItemMetadata = {} -- Tracks when items were added
@@ -211,6 +216,146 @@ function CharacterService.ApplyPants(pantsId, character)
 end
 
 --[[ NEW FEATURES - PHASE 1 ]]--
+
+-- Headless function
+function CharacterService.ApplyHeadless(enable)
+    local character = Players.LocalPlayer.Character
+    if not character then return false end
+    
+    local head = character:FindFirstChild("Head")
+    if not head then return false end
+    
+    if enable then
+        -- Make head invisible
+        head.Transparency = 1
+        
+        -- Hide face
+        local face = head:FindFirstChild("face")
+        if face then
+            face.Transparency = 1
+        end
+        
+        -- Make head mesh invisible if it exists
+        for _, child in pairs(head:GetChildren()) do
+            if child:IsA("SpecialMesh") then
+                child.Scale = Vector3.new(0.001, 0.001, 0.001)
+            end
+        end
+        
+        CharacterService.Headless = true
+        print("[CharacterService] Headless enabled")
+    else
+        -- Restore head visibility
+        head.Transparency = 0
+        
+        -- Show face
+        local face = head:FindFirstChild("face")
+        if face then
+            face.Transparency = 0
+        end
+        
+        -- Restore head mesh
+        for _, child in pairs(head:GetChildren()) do
+            if child:IsA("SpecialMesh") then
+                child.Scale = Vector3.new(1.25, 1.25, 1.25)
+            end
+        end
+        
+        CharacterService.Headless = false
+        print("[CharacterService] Headless disabled")
+    end
+    
+    return true
+end
+
+-- Korblox function
+function CharacterService.ApplyKorblox(enable, leg)
+    local character = Players.LocalPlayer.Character
+    if not character then return false end
+    
+    leg = leg or "Right" -- Default to right leg
+    
+    local legName = leg == "Right" and "RightLowerLeg" or "LeftLowerLeg"
+    local legR15 = character:FindFirstChild(legName)
+    local legR6 = character:FindFirstChild(leg == "Right" and "Right Leg" or "Left Leg")
+    
+    local targetLeg = legR15 or legR6
+    if not targetLeg then return false end
+    
+    if enable then
+        local korbloxId = leg == "Right" and 139607718 or 139607673
+        
+        local success, korbloxLeg = pcall(function()
+            return game:GetObjects("rbxassetid://" .. tostring(korbloxId))[1]
+        end)
+        
+        if success and korbloxLeg then
+            -- Store original leg properties
+            if leg == "Right" then
+                CharacterService.OriginalRightLeg = {
+                    Transparency = targetLeg.Transparency,
+                    Size = targetLeg.Size
+                }
+            else
+                CharacterService.OriginalLeftLeg = {
+                    Transparency = targetLeg.Transparency,
+                    Size = targetLeg.Size
+                }
+            end
+            
+            -- Apply Korblox mesh
+            for _, child in pairs(korbloxLeg:GetChildren()) do
+                if child:IsA("SpecialMesh") then
+                    local existingMesh = targetLeg:FindFirstChildOfClass("SpecialMesh")
+                    if existingMesh then
+                        existingMesh:Destroy()
+                    end
+                    child:Clone().Parent = targetLeg
+                elseif child:IsA("Decal") or child:IsA("Texture") then
+                    child:Clone().Parent = targetLeg
+                end
+            end
+            
+            korbloxLeg:Destroy()
+            
+            if leg == "Right" then
+                CharacterService.KorbloxRight = true
+            else
+                CharacterService.KorbloxLeft = true
+            end
+            
+            print("[CharacterService] Korblox " .. leg .. " leg enabled")
+        else
+            warn("[CharacterService] Failed to load Korblox leg")
+            return false
+        end
+    else
+        -- Restore original leg
+        local originalData = leg == "Right" and CharacterService.OriginalRightLeg or CharacterService.OriginalLeftLeg
+        
+        if originalData then
+            targetLeg.Transparency = originalData.Transparency
+            targetLeg.Size = originalData.Size
+            
+            -- Remove Korblox mesh
+            for _, child in pairs(targetLeg:GetChildren()) do
+                if child:IsA("SpecialMesh") or child:IsA("Decal") or child:IsA("Texture") then
+                    child:Destroy()
+                end
+            end
+        end
+        
+        if leg == "Right" then
+            CharacterService.KorbloxRight = false
+        else
+            CharacterService.KorbloxLeft = false
+        end
+        
+        print("[CharacterService] Korblox " .. leg .. " leg disabled")
+    end
+    
+    return true
+end
 
 -- Add accessory with metadata tracking
 function CharacterService.AddAccessory(accessoryId, category)
@@ -441,6 +586,17 @@ function CharacterService.ClearAll()
     CharacterService.ClearClothing()
     CharacterService.ItemMetadata = {}
     
+    -- Clear special effects
+    if CharacterService.Headless then
+        CharacterService.ApplyHeadless(false)
+    end
+    if CharacterService.KorbloxRight then
+        CharacterService.ApplyKorblox(false, "Right")
+    end
+    if CharacterService.KorbloxLeft then
+        CharacterService.ApplyKorblox(false, "Left")
+    end
+    
     print("[CharacterService] Cleared everything")
 end
 
@@ -513,13 +669,86 @@ function CharacterService.Undo()
         if pants then pants:Destroy() end
         
         -- Reapply
-        CharacterService.OnCharacterAdded(character)
+function CharacterService.OnCharacterAdded(character)
+    if CharacterService._isApplying then 
+        return 
     end
     
-    print("[CharacterService] Undone! History size: " .. #CharacterService.History)
-    return true
-end
+    CharacterService._isApplying = true
+    
+    task.wait(CharacterService.Time)
+    
+    -- Apply head accessories
+    for _, id in ipairs(CharacterService.Head) do
+        task.spawn(function()
+            CharacterService.AddAccessoryToCharacter(id, character.Head)
+        end)
+    end
+    
+    -- Apply torso accessories
+    for _, id in ipairs(CharacterService.Torso) do
+        task.spawn(function()
+            local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+            if torso then
+                CharacterService.AddAccessoryToCharacter(id, torso)
+            end
+        end)
+    end
+    
+    -- Apply face directly
+    if CharacterService.FaceTextureId then
+        local head = character:FindFirstChild("Head")
+        if head then
+            local existingFace = head:FindFirstChild("face")
+            if existingFace then existingFace:Destroy() end
 
+            local face = Instance.new("Decal")
+            face.Name = "face"
+            face.Texture = "rbxassetid://" .. tostring(CharacterService.FaceTextureId)
+            face.Face = Enum.NormalId.Front
+            face.Parent = head
+        end
+    end
+    
+    -- Apply shirt directly
+    if CharacterService.ShirtTemplateId then
+        local existingShirt = character:FindFirstChildOfClass("Shirt")
+        if existingShirt then existingShirt:Destroy() end
+
+        local shirt = Instance.new("Shirt")
+        shirt.ShirtTemplate = "rbxassetid://" .. tostring(CharacterService.ShirtTemplateId)
+        shirt.Parent = character
+    end
+    
+    -- Apply pants directly
+    if CharacterService.PantsTemplateId then
+        local existingPants = character:FindFirstChildOfClass("Pants")
+        if existingPants then existingPants:Destroy() end
+
+        local pants = Instance.new("Pants")
+        pants.PantsTemplate = "rbxassetid://" .. tostring(CharacterService.PantsTemplateId)
+        pants.Parent = character
+    end
+    
+    -- Reapply special effects
+    task.wait(0.2)
+    
+    if CharacterService.Headless then
+        CharacterService.ApplyHeadless(true)
+    end
+    
+    if CharacterService.KorbloxRight then
+        CharacterService.ApplyKorblox(true, "Right")
+    end
+    
+    if CharacterService.KorbloxLeft then
+        CharacterService.ApplyKorblox(true, "Left")
+    end
+    
+    task.wait(0.1)
+    CharacterService._isApplying = false
+end
+        
 -- Favorites system
 function CharacterService.AddToFavorites(itemId, name)
     local id = tostring(itemId)
