@@ -48,7 +48,7 @@ local function requireModule(name)
     return result
 end
 
-log("Starting bootstrap...")
+log("Starting bootstrap... | v1")
 
 -- Load modules
 local CharacterService = requireModule("CharacterService")
@@ -72,7 +72,7 @@ ItemEditorService.Init(CharacterService)
 log("Initializing GuiService...")
 GuiService.Init(CharacterService, OutfitService, ItemEditorService)
 
-log("All modules loaded successfully! Press Right Shift to toggle GUI. v1")
+log("All modules loaded successfully! Press Right Shift to toggle GUI. | v1")
 
 _G.CharacterCustomizerLoaded = true
 _G.CharacterCustomizerModules = {
