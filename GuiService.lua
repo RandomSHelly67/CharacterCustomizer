@@ -392,89 +392,147 @@ outfitLabel.Text = "💾 Outfit Management"
     deleteOutfitBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
     deleteOutfitBtn.Parent = contentFrame
     
--- Saved Outfits List
-local outfitListLabel = Instance.new("TextLabel")
-outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
-outfitListLabel.Position = UDim2.new(0, 0, 0, 467)  -- Keep this
-outfitListLabel.BackgroundTransparency = 1
-outfitListLabel.Text = "📁 Saved Outfits:"
-outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
-outfitListLabel.TextSize = 13
-outfitListLabel.Font = Enum.Font.Gotham
-outfitListLabel.TextXAlignment = Enum.TextXAlignment.Left
-outfitListLabel.Parent = contentFrame
-
-local outfitScrollFrame = Instance.new("ScrollingFrame")
-outfitScrollFrame.Name = "OutfitScrollFrame"
-outfitScrollFrame.Size = UDim2.new(1, 0, 0, 160)  -- CHANGED: 80 → 160
-outfitScrollFrame.Position = UDim2.new(0, 0, 0, 489)  -- Keep this
-outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
-outfitScrollFrame.BackgroundTransparency = 0.4
-outfitScrollFrame.BorderSizePixel = 0
-outfitScrollFrame.ScrollBarThickness = 4
-outfitScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
-outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-outfitScrollFrame.ClipsDescendants = true
-outfitScrollFrame.Parent = contentFrame
-
-local scrollFrameCorner = Instance.new("UICorner")
-scrollFrameCorner.CornerRadius = UDim.new(0, 6)
-scrollFrameCorner.Parent = outfitScrollFrame
-
-local outfitListLayout = Instance.new("UIListLayout")
-outfitListLayout.SortOrder = Enum.SortOrder.Name
-outfitListLayout.Padding = UDim.new(0, 5)
-outfitListLayout.Parent = outfitScrollFrame
+-- Undo and Favorites Buttons
+    local undoBtn = Instance.new("TextButton")
+    undoBtn.Name = "UndoButton"
+    undoBtn.Size = UDim2.new(0.31, 0, 0, 35)
+    undoBtn.Position = UDim2.new(0, 0, 0, 353)
+    undoBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 200)
+    undoBtn.BackgroundTransparency = 0.3
+    undoBtn.BorderSizePixel = 0
+    undoBtn.Text = "↶ Undo"
+    undoBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    undoBtn.TextSize = 14
+    undoBtn.Font = Enum.Font.GothamBold
+    undoBtn.Parent = contentFrame
+    
+    local undoBtnCorner = Instance.new("UICorner")
+    undoBtnCorner.CornerRadius = UDim.new(0, 6)
+    undoBtnCorner.Parent = undoBtn
+    
+    local favoritesBtn = Instance.new("TextButton")
+    favoritesBtn.Name = "FavoritesButton"
+    favoritesBtn.Size = UDim2.new(0.31, 0, 0, 35)
+    favoritesBtn.Position = UDim2.new(0.345, 0, 0, 353)
+    favoritesBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
+    favoritesBtn.BackgroundTransparency = 0.3
+    favoritesBtn.BorderSizePixel = 0
+    favoritesBtn.Text = "⭐ Favorites"
+    favoritesBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    favoritesBtn.TextSize = 14
+    favoritesBtn.Font = Enum.Font.GothamBold
+    favoritesBtn.Parent = contentFrame
+    
+    local favoritesBtnCorner = Instance.new("UICorner")
+    favoritesBtnCorner.CornerRadius = UDim.new(0, 6)
+    favoritesBtnCorner.Parent = favoritesBtn
+    
+    local itemEditorBtn = Instance.new("TextButton")
+    itemEditorBtn.Name = "ItemEditorButton"
+    itemEditorBtn.Size = UDim2.new(0.31, 0, 0, 35)
+    itemEditorBtn.Position = UDim2.new(0.69, 0, 0, 353)
+    itemEditorBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 200)
+    itemEditorBtn.BackgroundTransparency = 0.3
+    itemEditorBtn.BorderSizePixel = 0
+    itemEditorBtn.Text = "⚙️ Editor"
+    itemEditorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    itemEditorBtn.TextSize = 14
+    itemEditorBtn.Font = Enum.Font.GothamBold
+    itemEditorBtn.Parent = contentFrame
+    
+    local itemEditorBtnCorner = Instance.new("UICorner")
+    itemEditorBtnCorner.CornerRadius = UDim.new(0, 6)
+    itemEditorBtnCorner.Parent = itemEditorBtn
+    
+    -- Outfit Management
+    local outfitLabel = Instance.new("TextLabel")
+    outfitLabel.Size = UDim2.new(1, 0, 0, 20)
+    outfitLabel.Position = UDim2.new(0, 0, 0, 398)
+    outfitLabel.BackgroundTransparency = 1
+    outfitLabel.Text = "💾 Outfit Management"
+    outfitLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
+    outfitLabel.TextSize = 14
+    outfitLabel.Font = Enum.Font.GothamBold
+    outfitLabel.TextXAlignment = Enum.TextXAlignment.Left
+    outfitLabel.Parent = contentFrame
+    
+    local outfitInput = Instance.new("TextBox")
+    outfitInput.Name = "OutfitInput"
+    outfitInput.Size = UDim2.new(1, 0, 0, 35)
+    outfitInput.Position = UDim2.new(0, 0, 0, 422)
+    outfitInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+    outfitInput.BackgroundTransparency = 0.3
+    outfitInput.BorderSizePixel = 0
+    outfitInput.PlaceholderText = "Outfit name..."
+    outfitInput.Text = ""
+    outfitInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+    outfitInput.TextSize = 14
+    outfitInput.Font = Enum.Font.Gotham
+    outfitInput.ClearTextOnFocus = false
+    outfitInput.Parent = contentFrame
+    
+    local outfitInputCorner = Instance.new("UICorner")
+    outfitInputCorner.CornerRadius = UDim.new(0, 6)
+    outfitInputCorner.Parent = outfitInput
+    
+    local outfitInputStroke = Instance.new("UIStroke")
+    outfitInputStroke.Color = Color3.fromRGB(80, 80, 120)
+    outfitInputStroke.Thickness = 1
+    outfitInputStroke.Transparency = 0.6
+    outfitInputStroke.Parent = outfitInput
+    
+    local saveOutfitBtn = createCategoryButton("Save", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 467)})
+    saveOutfitBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 220)
+    saveOutfitBtn.Parent = contentFrame
+    
+    local loadOutfitBtn = createCategoryButton("Load", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 467)})
+    loadOutfitBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    loadOutfitBtn.Parent = contentFrame
+    
+    local deleteOutfitBtn = createCategoryButton("Delete", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 467)})
+    deleteOutfitBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
+    deleteOutfitBtn.Parent = contentFrame
+    
+    -- Saved Outfits List
+    local outfitListLabel = Instance.new("TextLabel")
+    outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
+    outfitListLabel.Position = UDim2.new(0, 0, 0, 512)
+    outfitListLabel.BackgroundTransparency = 1
+    outfitListLabel.Text = "📁 Saved Outfits:"
+    outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
+    outfitListLabel.TextSize = 13
+    outfitListLabel.Font = Enum.Font.Gotham
+    outfitListLabel.TextXAlignment = Enum.TextXAlignment.Left
+    outfitListLabel.Parent = contentFrame
 
     local outfitScrollFrame = Instance.new("ScrollingFrame")
-outfitScrollFrame.Name = "OutfitScrollFrame"
-outfitScrollFrame.Size = UDim2.new(1, 0, 0, 80)
-outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
-outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
-outfitScrollFrame.BackgroundTransparency = 0.4
-outfitScrollFrame.BorderSizePixel = 0
-outfitScrollFrame.ScrollBarThickness = 4
-outfitScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
-outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-outfitScrollFrame.ClipsDescendants = true
-outfitScrollFrame.Parent = contentFrame
+    outfitScrollFrame.Name = "OutfitScrollFrame"
+    outfitScrollFrame.Size = UDim2.new(1, 0, 0, 150)
+    outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
+    outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+    outfitScrollFrame.BackgroundTransparency = 0.4
+    outfitScrollFrame.BorderSizePixel = 0
+    outfitScrollFrame.ScrollBarThickness = 4
+    outfitScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
+    outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    outfitScrollFrame.ClipsDescendants = true
+    outfitScrollFrame.Parent = contentFrame
 
--- ADD THESE TWO THINGS:
-local scrollFrameCorner = Instance.new("UICorner")
-scrollFrameCorner.CornerRadius = UDim.new(0, 6)
-scrollFrameCorner.Parent = outfitScrollFrame
+    local scrollFrameCorner = Instance.new("UICorner")
+    scrollFrameCorner.CornerRadius = UDim.new(0, 6)
+    scrollFrameCorner.Parent = outfitScrollFrame
 
-local outfitListLayout = Instance.new("UIListLayout")
-outfitListLayout.SortOrder = Enum.SortOrder.Name
-outfitListLayout.Padding = UDim.new(0, 5)
-outfitListLayout.Parent = outfitScrollFrame
+    local outfitListLayout = Instance.new("UIListLayout")
+    outfitListLayout.SortOrder = Enum.SortOrder.Name
+    outfitListLayout.Padding = UDim.new(0, 5)
+    outfitListLayout.Parent = outfitScrollFrame
 
--- Then continue with Setup Button Logic...
--- Setup Button Logic
-GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
-    headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
-    headlessBtn, korbloxRBtn, korbloxLBtn,
-    undoBtn, favoritesBtn, itemEditorBtn,
-    outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
-    
-    -- Minimize/Close Logic
-    local isMinimized = false
-minimizeBtn.MouseButton1Click:Connect(function()
-        isMinimized = not isMinimized
-        if isMinimized then
-            contentFrame.Visible = false
-            mainFrame.Size = UDim2.new(0, 450, 0, 45)
-            minimizeBtn.Text = "□"
-        else
-            contentFrame.Visible = true
-            mainFrame.Size = UDim2.new(0, 450, 0, 700)  -- Changed from 620
-            minimizeBtn.Text = "_"
-        end
-    end)
-    
-    closeBtn.MouseButton1Click:Connect(function()
-        mainFrame.Visible = false
-    end)
+    -- Setup Button Logic
+    GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
+        headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
+        headlessBtn, korbloxRBtn, korbloxLBtn,
+        undoBtn, favoritesBtn, itemEditorBtn,
+        outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
     
     -- Make draggable
     GuiService.MakeDraggable(titleBar, mainFrame)
