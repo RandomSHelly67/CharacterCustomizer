@@ -462,26 +462,64 @@ function CharacterService.RemoveAccessory(accessoryId, category)
                 break
             end
         end
+    elseif category == "Face" then
+        CharacterService.Face = nil
+        CharacterService.FaceTextureId = nil
+        local head = character:FindFirstChild("Head")
+        if head then
+            local face = head:FindFirstChild("face")
+            if face then
+                face.Texture = "rbxasset://textures/face.png"
+            end
+        end
+        CharacterService.ItemMetadata[tostring(id)] = nil
+        print("[CharacterService] Removed face: " .. id)
+        return true
+    elseif category == "Shirt" then
+        CharacterService.Shirt = nil
+        CharacterService.ShirtTemplateId = nil
+        local shirt = character:FindFirstChildOfClass("Shirt")
+        if shirt then shirt:Destroy() end
+        CharacterService.ItemMetadata[tostring(id)] = nil
+        print("[CharacterService] Removed shirt: " .. id)
+        return true
+    elseif category == "Pants" then
+        CharacterService.Pants = nil
+        CharacterService.PantsTemplateId = nil
+        local pants = character:FindFirstChildOfClass("Pants")
+        if pants then pants:Destroy() end
+        CharacterService.ItemMetadata[tostring(id)] = nil
+        print("[CharacterService] Removed pants: " .. id)
+        return true
     end
     
-    -- Remove from character
+    -- Remove from character (for Head/Torso accessories)
+    local removed = false
     for _, accessory in pairs(character:GetChildren()) do
         if accessory:IsA("Accessory") then
             local handle = accessory:FindFirstChild("Handle")
             if handle then
                 local mesh = handle:FindFirstChildOfClass("SpecialMesh")
-                local meshId = mesh and mesh.MeshId or ""
-                if meshId:match(tostring(id)) then
-                    accessory:Destroy()
-                    CharacterService.ItemMetadata[tostring(id)] = nil
-                    print("[CharacterService] Removed accessory: " .. id)
-                    return true
+                if mesh then
+                    local meshId = mesh.MeshId or ""
+                    -- Check if the mesh ID contains our accessory ID
+                    if meshId:match(tostring(id)) then
+                        accessory:Destroy()
+                        CharacterService.ItemMetadata[tostring(id)] = nil
+                        print("[CharacterService] Removed accessory: " .. id)
+                        removed = true
+                        break
+                    end
                 end
             end
         end
     end
     
-    return false
+    if not removed then
+        warn("[CharacterService] Could not find accessory " .. id .. " on character")
+    end
+    
+    return removed
 end
 
 -- Clear specific categories
