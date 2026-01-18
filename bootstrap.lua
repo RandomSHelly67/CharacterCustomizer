@@ -48,7 +48,7 @@ local function requireModule(name)
     return result
 end
 
-log("Starting bootstrap... | v2.5 test")
+log("Starting bootstrap... | v2.6 Outfits")
 
 -- Load modules
 local CharacterService = requireModule("CharacterService")
