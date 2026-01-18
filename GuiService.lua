@@ -289,8 +289,9 @@ function GuiService.CreateMainFrame()
     viewEquippedBtnCorner.CornerRadius = UDim.new(0, 6)
     viewEquippedBtnCorner.Parent = viewEquippedBtn
 
-    -- Undo and Favorites Buttons
+   -- Undo and Favorites Buttons
     local undoBtn = Instance.new("TextButton")
+    undoBtn.Name = "UndoButton"
     undoBtn.Size = UDim2.new(0.31, 0, 0, 35)
     undoBtn.Position = UDim2.new(0, 0, 0, 353)
     undoBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 200)
@@ -307,6 +308,7 @@ function GuiService.CreateMainFrame()
     undoBtnCorner.Parent = undoBtn
     
     local favoritesBtn = Instance.new("TextButton")
+    favoritesBtn.Name = "FavoritesButton"
     favoritesBtn.Size = UDim2.new(0.31, 0, 0, 35)
     favoritesBtn.Position = UDim2.new(0.345, 0, 0, 353)
     favoritesBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
@@ -323,6 +325,7 @@ function GuiService.CreateMainFrame()
     favoritesBtnCorner.Parent = favoritesBtn
     
     local itemEditorBtn = Instance.new("TextButton")
+    itemEditorBtn.Name = "ItemEditorButton"
     itemEditorBtn.Size = UDim2.new(0.31, 0, 0, 35)
     itemEditorBtn.Position = UDim2.new(0.69, 0, 0, 353)
     itemEditorBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 200)
@@ -413,10 +416,11 @@ function GuiService.CreateMainFrame()
     outfitScrollFrame.Parent = contentFrame
     
     -- Setup Button Logic
-    GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
-        headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
-        headlessBtn, korbloxRBtn, korbloxLBtn,
-        outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
+GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
+    headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
+    headlessBtn, korbloxRBtn, korbloxLBtn,
+    undoBtn, favoritesBtn, itemEditorBtn,
+    outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
     
     -- Minimize/Close Logic
     local isMinimized = false
@@ -444,6 +448,7 @@ end
 function GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn,
     headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn,
     headlessBtn, korbloxRBtn, korbloxLBtn,
+    undoBtn, favoritesBtn, itemEditorBtn,
     outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
     
     local cs = GuiService.CharacterService
