@@ -43,8 +43,8 @@ function GuiService.CreateMainFrame()
     -- Main Frame with glass effect
     mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 450, 0, 620)
-    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -310)
+    mainFrame.Size = UDim2.new(0, 450, 0, 660)
+    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -330)
     mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
     mainFrame.BackgroundTransparency = 0.15
     mainFrame.BorderSizePixel = 0
@@ -288,11 +288,60 @@ function GuiService.CreateMainFrame()
     local viewEquippedBtnCorner = Instance.new("UICorner")
     viewEquippedBtnCorner.CornerRadius = UDim.new(0, 6)
     viewEquippedBtnCorner.Parent = viewEquippedBtn
+
+    -- Undo and Favorites Buttons
+    local undoBtn = Instance.new("TextButton")
+    undoBtn.Size = UDim2.new(0.31, 0, 0, 35)
+    undoBtn.Position = UDim2.new(0, 0, 0, 353)
+    undoBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 200)
+    undoBtn.BackgroundTransparency = 0.3
+    undoBtn.BorderSizePixel = 0
+    undoBtn.Text = "↶ Undo"
+    undoBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    undoBtn.TextSize = 14
+    undoBtn.Font = Enum.Font.GothamBold
+    undoBtn.Parent = contentFrame
+    
+    local undoBtnCorner = Instance.new("UICorner")
+    undoBtnCorner.CornerRadius = UDim.new(0, 6)
+    undoBtnCorner.Parent = undoBtn
+    
+    local favoritesBtn = Instance.new("TextButton")
+    favoritesBtn.Size = UDim2.new(0.31, 0, 0, 35)
+    favoritesBtn.Position = UDim2.new(0.345, 0, 0, 353)
+    favoritesBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
+    favoritesBtn.BackgroundTransparency = 0.3
+    favoritesBtn.BorderSizePixel = 0
+    favoritesBtn.Text = "⭐ Favorites"
+    favoritesBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    favoritesBtn.TextSize = 14
+    favoritesBtn.Font = Enum.Font.GothamBold
+    favoritesBtn.Parent = contentFrame
+    
+    local favoritesBtnCorner = Instance.new("UICorner")
+    favoritesBtnCorner.CornerRadius = UDim.new(0, 6)
+    favoritesBtnCorner.Parent = favoritesBtn
+    
+    local itemEditorBtn = Instance.new("TextButton")
+    itemEditorBtn.Size = UDim2.new(0.31, 0, 0, 35)
+    itemEditorBtn.Position = UDim2.new(0.69, 0, 0, 353)
+    itemEditorBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 200)
+    itemEditorBtn.BackgroundTransparency = 0.3
+    itemEditorBtn.BorderSizePixel = 0
+    itemEditorBtn.Text = "⚙️ Editor"
+    itemEditorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    itemEditorBtn.TextSize = 14
+    itemEditorBtn.Font = Enum.Font.GothamBold
+    itemEditorBtn.Parent = contentFrame
+    
+    local itemEditorBtnCorner = Instance.new("UICorner")
+    itemEditorBtnCorner.CornerRadius = UDim.new(0, 6)
+    itemEditorBtnCorner.Parent = itemEditorBtn
     
     -- Outfit Management
     local outfitLabel = Instance.new("TextLabel")
     outfitLabel.Size = UDim2.new(1, 0, 0, 20)
-    outfitLabel.Position = UDim2.new(0, 0, 0, 353)
+    outfitLabel.Position = UDim2.new(0, 0, 0, 398)
     outfitLabel.BackgroundTransparency = 1
     outfitLabel.Text = "💾 Outfit Management"
     outfitLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
@@ -304,7 +353,7 @@ function GuiService.CreateMainFrame()
     local outfitInput = Instance.new("TextBox")
     outfitInput.Name = "OutfitInput"
     outfitInput.Size = UDim2.new(1, 0, 0, 35)
-    outfitInput.Position = UDim2.new(0, 0, 0, 377)
+    outfitInput.Position = UDim2.new(0, 0, 0, 422)
     outfitInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
     outfitInput.BackgroundTransparency = 0.3
     outfitInput.BorderSizePixel = 0
@@ -326,22 +375,22 @@ function GuiService.CreateMainFrame()
     outfitInputStroke.Transparency = 0.6
     outfitInputStroke.Parent = outfitInput
     
-    local saveOutfitBtn = createCategoryButton("Save", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 422)})
+    local saveOutfitBtn = createCategoryButton("Save", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 467)})
     saveOutfitBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 220)
     saveOutfitBtn.Parent = contentFrame
     
-    local loadOutfitBtn = createCategoryButton("Load", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 422)})
+    local loadOutfitBtn = createCategoryButton("Load", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 467)})
     loadOutfitBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     loadOutfitBtn.Parent = contentFrame
     
-    local deleteOutfitBtn = createCategoryButton("Delete", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 422)})
+    local deleteOutfitBtn = createCategoryButton("Delete", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 467)})
     deleteOutfitBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
     deleteOutfitBtn.Parent = contentFrame
     
-    -- Saved Outfits List
+-- Saved Outfits List
     local outfitListLabel = Instance.new("TextLabel")
     outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
-    outfitListLabel.Position = UDim2.new(0, 0, 0, 467)
+    outfitListLabel.Position = UDim2.new(0, 0, 0, 512)
     outfitListLabel.BackgroundTransparency = 1
     outfitListLabel.Text = "📁 Saved Outfits:"
     outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
@@ -352,24 +401,16 @@ function GuiService.CreateMainFrame()
     
     local outfitScrollFrame = Instance.new("ScrollingFrame")
     outfitScrollFrame.Name = "OutfitScrollFrame"
-    outfitScrollFrame.Size = UDim2.new(1, 0, 0, 105)
-    outfitScrollFrame.Position = UDim2.new(0, 0, 0, 489)
+    outfitScrollFrame.Size = UDim2.new(1, 0, 0, 80)  -- FIXED: Changed from 105 to 80
+    outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
     outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
     outfitScrollFrame.BackgroundTransparency = 0.4
     outfitScrollFrame.BorderSizePixel = 0
     outfitScrollFrame.ScrollBarThickness = 4
     outfitScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
     outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    outfitScrollFrame.ClipsDescendants = true  -- ADDED: Prevents overflow
     outfitScrollFrame.Parent = contentFrame
-    
-    local scrollFrameCorner = Instance.new("UICorner")
-    scrollFrameCorner.CornerRadius = UDim.new(0, 6)
-    scrollFrameCorner.Parent = outfitScrollFrame
-    
-    local outfitListLayout = Instance.new("UIListLayout")
-    outfitListLayout.SortOrder = Enum.SortOrder.Name
-    outfitListLayout.Padding = UDim.new(0, 5)
-    outfitListLayout.Parent = outfitScrollFrame
     
     -- Setup Button Logic
     GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
@@ -379,7 +420,7 @@ function GuiService.CreateMainFrame()
     
     -- Minimize/Close Logic
     local isMinimized = false
-    minimizeBtn.MouseButton1Click:Connect(function()
+minimizeBtn.MouseButton1Click:Connect(function()
         isMinimized = not isMinimized
         if isMinimized then
             contentFrame.Visible = false
@@ -387,7 +428,7 @@ function GuiService.CreateMainFrame()
             minimizeBtn.Text = "□"
         else
             contentFrame.Visible = true
-            mainFrame.Size = UDim2.new(0, 450, 0, 620)
+            mainFrame.Size = UDim2.new(0, 450, 0, 660)  -- Changed from 620
             minimizeBtn.Text = "_"
         end
     end)
