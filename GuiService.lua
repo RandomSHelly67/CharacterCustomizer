@@ -772,111 +772,114 @@ end)
 GuiService.MakeDraggable(equippedTitleBar, equippedFrame)
 end
 function GuiService.UpdateEquippedItems()
-local cs = GuiService.CharacterService
-local equippedScrollFrame = equippedFrame:FindFirstChild("EquippedScrollFrame")
-if not equippedScrollFrame then return end
-for _, child in pairs(equippedScrollFrame:GetChildren()) do
-    if child:IsA("Frame") then
-        child:Destroy()
+    local cs = GuiService.CharacterService
+    local equippedScrollFrame = equippedFrame:FindFirstChild("EquippedScrollFrame")
+    if not equippedScrollFrame then return end
+    
+    for _, child in pairs(equippedScrollFrame:GetChildren()) do
+        if child:IsA("Frame") then
+            child:Destroy()
+        end
     end
-end
 
-local function createItemFrame(text, itemId, bodyPart)
-    local itemFrame = Instance.new("Frame")
-    itemFrame.Size = UDim2.new(1, -10, 0, 35)
-    itemFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
-    itemFrame.BackgroundTransparency = 0.3
-    itemFrame.BorderSizePixel = 0
-    itemFrame.Parent = equippedScrollFrame
-    
-    local itemCorner = Instance.new("UICorner")
-    itemCorner.CornerRadius = UDim.new(0, 6)
-    itemCorner.Parent = itemFrame
-    
-    local itemLabel = Instance.new("TextLabel")
-    itemLabel.Size = UDim2.new(1, -50, 1, 0)
-    itemLabel.Position = UDim2.new(0, 10, 0, 0)
-    itemLabel.BackgroundTransparency = 1
-    itemLabel.Text = text
-    itemLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
-    itemLabel.TextSize = 13
-    itemLabel.Font = Enum.Font.Gotham
-    itemLabel.TextXAlignment = Enum.TextXAlignment.Left
-    itemLabel.Parent = itemFrame
-    
-    if itemId and bodyPart then
-        local removeBtn = Instance.new("TextButton")
-        removeBtn.Size = UDim2.new(0, 30, 0, 25)
-        removeBtn.Position = UDim2.new(1, -35, 0.5, -12.5)
-        removeBtn.BackgroundColor3 = Color3.fromRGB(220, 80, 80)
-        removeBtn.BackgroundTransparency = 0.2
-        removeBtn.BorderSizePixel = 0
-        removeBtn.Text = "✕"
-        removeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        removeBtn.TextSize = 16
-        removeBtn.Font = Enum.Font.GothamBold
-        removeBtn.Parent = itemFrame
+    local function createItemFrame(text, itemId, bodyPart)
+        local itemFrame = Instance.new("Frame")
+        itemFrame.Size = UDim2.new(1, -10, 0, 35)
+        itemFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
+        itemFrame.BackgroundTransparency = 0.3
+        itemFrame.BorderSizePixel = 0
+        itemFrame.Parent = equippedScrollFrame
         
-        local removeBtnCorner = Instance.new("UICorner")
-        removeBtnCorner.CornerRadius = UDim.new(0, 4)
-        removeBtnCorner.Parent = removeBtn
+        local itemCorner = Instance.new("UICorner")
+        itemCorner.CornerRadius = UDim.new(0, 6)
+        itemCorner.Parent = itemFrame
         
-        removeBtn.MouseButton1Click:Connect(function()
-            cs.RemoveAccessory(itemId, bodyPart)
-            GuiService.UpdateEquippedItems()
-        end)
+        local itemLabel = Instance.new("TextLabel")
+        itemLabel.Size = UDim2.new(1, -50, 1, 0)
+        itemLabel.Position = UDim2.new(0, 10, 0, 0)
+        itemLabel.BackgroundTransparency = 1
+        itemLabel.Text = text
+        itemLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
+        itemLabel.TextSize = 13
+        itemLabel.Font = Enum.Font.Gotham
+        itemLabel.TextXAlignment = Enum.TextXAlignment.Left
+        itemLabel.Parent = itemFrame
+        
+        if itemId and bodyPart then
+            local removeBtn = Instance.new("TextButton")
+            removeBtn.Size = UDim2.new(0, 30, 0, 25)
+            removeBtn.Position = UDim2.new(1, -35, 0.5, -12.5)
+            removeBtn.BackgroundColor3 = Color3.fromRGB(220, 80, 80)
+            removeBtn.BackgroundTransparency = 0.2
+            removeBtn.BorderSizePixel = 0
+            removeBtn.Text = "✕"
+            removeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            removeBtn.TextSize = 16
+            removeBtn.Font = Enum.Font.GothamBold
+            removeBtn.Parent = itemFrame
+            
+            local removeBtnCorner = Instance.new("UICorner")
+            removeBtnCorner.CornerRadius = UDim.new(0, 4)
+            removeBtnCorner.Parent = removeBtn
+            
+            removeBtn.MouseButton1Click:Connect(function()
+                cs.RemoveAccessory(itemId, bodyPart)
+                -- Refresh the equipped items display after removal
+                task.wait(0.1)
+                GuiService.UpdateEquippedItems()
+            end)
+        end
+        
+        return itemFrame
     end
-    
-    return itemFrame
-end
 
-local yOffset = 0
+    local yOffset = 0
 
--- Head accessories
-for _, id in ipairs(cs.Head) do
-    createItemFrame("🎩 Head: " .. tostring(id), id, "Head")
-    yOffset = yOffset + 40
-end
+    -- Head accessories
+    for _, id in ipairs(cs.Head) do
+        createItemFrame("🎩 Head: " .. tostring(id), id, "Head")
+        yOffset = yOffset + 40
+    end
 
--- Torso accessories
-for _, id in ipairs(cs.Torso) do
-    createItemFrame("👕 Torso: " .. tostring(id), id, "Torso")
-    yOffset = yOffset + 40
-end
+    -- Torso accessories
+    for _, id in ipairs(cs.Torso) do
+        createItemFrame("👕 Torso: " .. tostring(id), id, "Torso")
+        yOffset = yOffset + 40
+    end
 
--- Face/Shirt/Pants
-if cs.Face then
-    createItemFrame("😊 Face: " .. tostring(cs.Face))
-    yOffset = yOffset + 40
-end
+    -- Face/Shirt/Pants
+    if cs.Face then
+        createItemFrame("😊 Face: " .. tostring(cs.Face))
+        yOffset = yOffset + 40
+    end
 
-if cs.Shirt then
-    createItemFrame("👔 Shirt: " .. tostring(cs.Shirt))
-    yOffset = yOffset + 40
-end
+    if cs.Shirt then
+        createItemFrame("👔 Shirt: " .. tostring(cs.Shirt))
+        yOffset = yOffset + 40
+    end
 
-if cs.Pants then
-    createItemFrame("👖 Pants: " .. tostring(cs.Pants))
-    yOffset = yOffset + 40
-end
+    if cs.Pants then
+        createItemFrame("👖 Pants: " .. tostring(cs.Pants))
+        yOffset = yOffset + 40
+    end
 
--- Special effects
-if cs.Headless then
-    createItemFrame("👻 Headless: Active")
-    yOffset = yOffset + 40
-end
+    -- Special effects
+    if cs.Headless then
+        createItemFrame("👻 Headless: Active")
+        yOffset = yOffset + 40
+    end
 
-if cs.KorbloxRight then
-    createItemFrame("🦴 Korblox Right: Active")
-    yOffset = yOffset + 40
-end
+    if cs.KorbloxRight then
+        createItemFrame("🦴 Korblox Right: Active")
+        yOffset = yOffset + 40
+    end
 
-if cs.KorbloxLeft then
-    createItemFrame("🦴 Korblox Left: Active")
-    yOffset = yOffset + 40
-end
+    if cs.KorbloxLeft then
+        createItemFrame("🦴 Korblox Left: Active")
+        yOffset = yOffset + 40
+    end
 
-equippedScrollFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
+    equippedScrollFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
 end
 function GuiService.MakeDraggable(handle, frame)
 local dragging
