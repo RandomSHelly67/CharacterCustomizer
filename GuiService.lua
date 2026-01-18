@@ -391,31 +391,64 @@ function GuiService.CreateMainFrame()
     deleteOutfitBtn.Parent = contentFrame
     
 -- Saved Outfits List
-    local outfitListLabel = Instance.new("TextLabel")
-    outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
-    outfitListLabel.Position = UDim2.new(0, 0, 0, 512)
-    outfitListLabel.BackgroundTransparency = 1
-    outfitListLabel.Text = "📁 Saved Outfits:"
-    outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
-    outfitListLabel.TextSize = 13
-    outfitListLabel.Font = Enum.Font.Gotham
-    outfitListLabel.TextXAlignment = Enum.TextXAlignment.Left
-    outfitListLabel.Parent = contentFrame
-    
+local outfitListLabel = Instance.new("TextLabel")
+outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
+outfitListLabel.Position = UDim2.new(0, 0, 0, 512)
+outfitListLabel.BackgroundTransparency = 1
+outfitListLabel.Text = "📁 Saved Outfits:"
+outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
+outfitListLabel.TextSize = 13
+outfitListLabel.Font = Enum.Font.Gotham
+outfitListLabel.TextXAlignment = Enum.TextXAlignment.Left
+outfitListLabel.Parent = contentFrame
+
+local outfitScrollFrame = Instance.new("ScrollingFrame")
+outfitScrollFrame.Name = "OutfitScrollFrame"
+outfitScrollFrame.Size = UDim2.new(1, 0, 0, 80)
+outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
+outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+outfitScrollFrame.BackgroundTransparency = 0.4
+outfitScrollFrame.BorderSizePixel = 0
+outfitScrollFrame.ScrollBarThickness = 4
+outfitScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
+outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+outfitScrollFrame.ClipsDescendants = true
+outfitScrollFrame.Parent = contentFrame
+
+local scrollFrameCorner = Instance.new("UICorner")
+scrollFrameCorner.CornerRadius = UDim.new(0, 6)
+scrollFrameCorner.Parent = outfitScrollFrame
+
+local outfitListLayout = Instance.new("UIListLayout")
+outfitListLayout.SortOrder = Enum.SortOrder.Name
+outfitListLayout.Padding = UDim.new(0, 5)
+outfitListLayout.Parent = outfitScrollFrame
+
     local outfitScrollFrame = Instance.new("ScrollingFrame")
-    outfitScrollFrame.Name = "OutfitScrollFrame"
-    outfitScrollFrame.Size = UDim2.new(1, 0, 0, 80)  -- FIXED: Changed from 105 to 80
-    outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
-    outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
-    outfitScrollFrame.BackgroundTransparency = 0.4
-    outfitScrollFrame.BorderSizePixel = 0
-    outfitScrollFrame.ScrollBarThickness = 4
-    outfitScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
-    outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    outfitScrollFrame.ClipsDescendants = true  -- ADDED: Prevents overflow
-    outfitScrollFrame.Parent = contentFrame
-    
-    -- Setup Button Logic
+outfitScrollFrame.Name = "OutfitScrollFrame"
+outfitScrollFrame.Size = UDim2.new(1, 0, 0, 80)
+outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
+outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+outfitScrollFrame.BackgroundTransparency = 0.4
+outfitScrollFrame.BorderSizePixel = 0
+outfitScrollFrame.ScrollBarThickness = 4
+outfitScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
+outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+outfitScrollFrame.ClipsDescendants = true
+outfitScrollFrame.Parent = contentFrame
+
+-- ADD THESE TWO THINGS:
+local scrollFrameCorner = Instance.new("UICorner")
+scrollFrameCorner.CornerRadius = UDim.new(0, 6)
+scrollFrameCorner.Parent = outfitScrollFrame
+
+local outfitListLayout = Instance.new("UIListLayout")
+outfitListLayout.SortOrder = Enum.SortOrder.Name
+outfitListLayout.Padding = UDim.new(0, 5)
+outfitListLayout.Parent = outfitScrollFrame
+
+-- Then continue with Setup Button Logic...
+-- Setup Button Logic
 GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
     headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
     headlessBtn, korbloxRBtn, korbloxLBtn,
@@ -685,6 +718,9 @@ btnCorner.Parent = outfitBtn
                     korbloxLBtn.Text = "✓ Korblox L"
                 end
                 
+                outfitBtn.MouseButton1Click:Connect(function()
+            local success = os.LoadOutfit(outfitName)
+            if success then
                 outfitBtn.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
                 task.wait(0.3)
                 outfitBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
@@ -692,6 +728,7 @@ btnCorner.Parent = outfitBtn
         end)
     end
     
+    -- THIS LINE IS IMPORTANT - ADD IT AT THE END
     outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, #outfits * 35)
 end
 
