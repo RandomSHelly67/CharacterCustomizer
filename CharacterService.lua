@@ -27,6 +27,7 @@ CharacterService.ItemMetadata = {} -- Tracks when items were added
 CharacterService.History = {} -- For undo functionality
 CharacterService.MaxHistorySize = 50
 CharacterService.Favorites = {} -- Favorite items with names
+CharacterService.AccessoryObjects = {} -- Maps accessoryId -> actual Accessory instance
 
 -- Internal
 CharacterService._characterConnection = nil
@@ -123,6 +124,14 @@ function CharacterService.AddAccessoryToCharacter(accessoryId, parentPart)
     end
     
     accessory.Parent = character
+    
+    -- ADDED: Track this accessory object by ID
+    local id = tostring(accessoryId)
+    if not CharacterService.AccessoryObjects[id] then
+        CharacterService.AccessoryObjects[id] = {}
+    end
+    table.insert(CharacterService.AccessoryObjects[id], accessory)
+    
     return true
 end
 
@@ -493,27 +502,42 @@ function CharacterService.RemoveAccessory(accessoryId, category)
         return true
     end
     
-    -- Remove from character (for Head/Torso accessories)
+    -- Remove from character using tracked objects
     local removed = false
-    for _, accessory in pairs(character:GetChildren()) do
-        if accessory:IsA("Accessory") then
-            local handle = accessory:FindFirstChild("Handle")
-            if handle then
-                local mesh = handle:FindFirstChildOfClass("SpecialMesh")
-                if mesh then
-                    local meshId = mesh.MeshId or ""
-                    -- Check if the mesh ID contains our accessory ID
-                    if meshId:match(tostring(id)) then
-                        accessory:Destroy()
-                        CharacterService.ItemMetadata[tostring(id)] = nil
-                        print("[CharacterService] Removed accessory: " .. id)
-                        removed = true
-                        break
+    local idStr = tostring(id)
+    
+    if CharacterService.AccessoryObjects[idStr] then
+        for i, accessory in ipairs(CharacterService.AccessoryObjects[idStr]) do
+            if accessory and accessory.Parent then
+                accessory:Destroy()
+                removed = true
+                print("[CharacterService] Removed tracked accessory: " .. id)
+            end
+        end
+        CharacterService.AccessoryObjects[idStr] = nil
+    end
+    
+    -- Fallback: try to find and remove by name/handle if tracking failed
+    if not removed then
+        for _, accessory in pairs(character:GetChildren()) do
+            if accessory:IsA("Accessory") then
+                local handle = accessory:FindFirstChild("Handle")
+                if handle then
+                    local mesh = handle:FindFirstChildOfClass("SpecialMesh")
+                    if mesh and mesh.MeshId then
+                        if mesh.MeshId:match(tostring(id)) then
+                            accessory:Destroy()
+                            removed = true
+                            print("[CharacterService] Removed accessory (fallback): " .. id)
+                            break
+                        end
                     end
                 end
             end
         end
     end
+    
+    CharacterService.ItemMetadata[tostring(id)] = nil
     
     if not removed then
         warn("[CharacterService] Could not find accessory " .. id .. " on character")
@@ -774,6 +798,9 @@ end
 function CharacterService.ClearCharacter(character)
     character = character or Players.LocalPlayer.Character
     if not character then return false end
+    
+    -- ADDED: Clear tracked accessories
+    CharacterService.AccessoryObjects = {}
     
     for _, accessory in pairs(character:GetChildren()) do
         if accessory:IsA("Accessory") then
