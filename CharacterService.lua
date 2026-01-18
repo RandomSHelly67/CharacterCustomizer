@@ -655,100 +655,13 @@ function CharacterService.Undo()
     -- Reapply to character
     local character = Players.LocalPlayer.Character
     if character then
-        -- Clear everything first
-        for _, accessory in pairs(character:GetChildren()) do
-            if accessory:IsA("Accessory") then
-                accessory:Destroy()
-            end
-        end
-        
-        local shirt = character:FindFirstChildOfClass("Shirt")
-        if shirt then shirt:Destroy() end
-        
-        local pants = character:FindFirstChildOfClass("Pants")
-        if pants then pants:Destroy() end
-        
-        -- Reapply
-function CharacterService.OnCharacterAdded(character)
-    if CharacterService._isApplying then 
-        return 
+        CharacterService.OnCharacterAdded(character)
     end
     
-    CharacterService._isApplying = true
-    
-    task.wait(CharacterService.Time)
-    
-    -- Apply head accessories
-    for _, id in ipairs(CharacterService.Head) do
-        task.spawn(function()
-            CharacterService.AddAccessoryToCharacter(id, character.Head)
-        end)
-    end
-    
-    -- Apply torso accessories
-    for _, id in ipairs(CharacterService.Torso) do
-        task.spawn(function()
-            local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
-            if torso then
-                CharacterService.AddAccessoryToCharacter(id, torso)
-            end
-        end)
-    end
-    
-    -- Apply face directly
-    if CharacterService.FaceTextureId then
-        local head = character:FindFirstChild("Head")
-        if head then
-            local existingFace = head:FindFirstChild("face")
-            if existingFace then existingFace:Destroy() end
-
-            local face = Instance.new("Decal")
-            face.Name = "face"
-            face.Texture = "rbxassetid://" .. tostring(CharacterService.FaceTextureId)
-            face.Face = Enum.NormalId.Front
-            face.Parent = head
-        end
-    end
-    
-    -- Apply shirt directly
-    if CharacterService.ShirtTemplateId then
-        local existingShirt = character:FindFirstChildOfClass("Shirt")
-        if existingShirt then existingShirt:Destroy() end
-
-        local shirt = Instance.new("Shirt")
-        shirt.ShirtTemplate = "rbxassetid://" .. tostring(CharacterService.ShirtTemplateId)
-        shirt.Parent = character
-    end
-    
-    -- Apply pants directly
-    if CharacterService.PantsTemplateId then
-        local existingPants = character:FindFirstChildOfClass("Pants")
-        if existingPants then existingPants:Destroy() end
-
-        local pants = Instance.new("Pants")
-        pants.PantsTemplate = "rbxassetid://" .. tostring(CharacterService.PantsTemplateId)
-        pants.Parent = character
-    end
-    
-    -- Reapply special effects
-    task.wait(0.2)
-    
-    if CharacterService.Headless then
-        CharacterService.ApplyHeadless(true)
-    end
-    
-    if CharacterService.KorbloxRight then
-        CharacterService.ApplyKorblox(true, "Right")
-    end
-    
-    if CharacterService.KorbloxLeft then
-        CharacterService.ApplyKorblox(true, "Left")
-    end
-    
-    task.wait(0.1)
-    CharacterService._isApplying = false
+    print("[CharacterService] Undo successful")
+    return true
 end
-        
+
 -- Favorites system
 function CharacterService.AddToFavorites(itemId, name)
     local id = tostring(itemId)
@@ -839,7 +752,6 @@ function CharacterService.ClearCharacter(character)
     return true
 end
 
--- FIXED: This function now prevents infinite loops
 function CharacterService.OnCharacterAdded(character)
     -- Prevent re-entry
     if CharacterService._isApplying then 
@@ -900,6 +812,21 @@ function CharacterService.OnCharacterAdded(character)
         local pants = Instance.new("Pants")
         pants.PantsTemplate = "rbxassetid://" .. tostring(CharacterService.PantsTemplateId)
         pants.Parent = character
+    end
+    
+    -- Reapply special effects
+    task.wait(0.2)
+    
+    if CharacterService.Headless then
+        CharacterService.ApplyHeadless(true)
+    end
+    
+    if CharacterService.KorbloxRight then
+        CharacterService.ApplyKorblox(true, "Right")
+    end
+    
+    if CharacterService.KorbloxLeft then
+        CharacterService.ApplyKorblox(true, "Left")
     end
     
     task.wait(0.1)
