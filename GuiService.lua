@@ -666,34 +666,35 @@ function GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn,
         GuiService.OpenItemEditorWindow()
     end)
     
-    -- Outfit Management
-    local function updateOutfitList()
-        for _, child in pairs(outfitScrollFrame:GetChildren()) do
-            if child:IsA("TextButton") then
-                child:Destroy()
-            end
+-- Outfit Management
+local function updateOutfitList()
+    for _, child in pairs(outfitScrollFrame:GetChildren()) do
+        if child:IsA("TextButton") then
+            child:Destroy()
         end
+    end
+    
+    local outfits = os.ListOutfits()
+    
+    for i, outfitName in ipairs(outfits) do
+        local outfitBtn = Instance.new("TextButton")
+        outfitBtn.Name = outfitName
+        outfitBtn.Size = UDim2.new(1, -10, 0, 30)
+        outfitBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
+        outfitBtn.BackgroundTransparency = 0.3
+        outfitBtn.BorderSizePixel = 0
+        outfitBtn.Text = "📦 " .. outfitName
+        outfitBtn.TextColor3 = Color3.fromRGB(220, 220, 255)
+        outfitBtn.TextSize = 13
+        outfitBtn.Font = Enum.Font.Gotham
+        outfitBtn.TextXAlignment = Enum.TextXAlignment.Left
+        outfitBtn.TextTruncate = Enum.TextTruncate.AtEnd
+        outfitBtn.Parent = outfitScrollFrame
         
-        local outfits = os.ListOutfits()
+        local btnCorner = Instance.new("UICorner")
+        btnCorner.CornerRadius = UDim.new(0, 4)
+        btnCorner.Parent = outfitBtn
         
-        for i, outfitName in ipairs(outfits) do
-            local outfitBtn = Instance.new("TextButton")
-            outfitBtn.Name = outfitName
-            outfitBtn.Size = UDim2.new(1, -10, 0, 30)
-            outfitBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
-            outfitBtn.BackgroundTransparency = 0.3
-            outfitBtn.BorderSizePixel = 0
-            outfitBtn.Text = "📦 " .. outfitName
-            outfitBtn.TextColor3 = Color3.fromRGB(220, 220, 255)
-            outfitBtn.TextSize = 13
-            outfitBtn.Font = Enum.Font.Gotham
-            outfitBtn.TextXAlignment = Enum.TextXAlignment.Left
-            outfitBtn.TextTruncate = Enum.TextTruncate.AtEnd
-            outfitBtn.Parent = outfitScrollFrame
-            
-            local btnCorner = Instance.new("UICorner")
-btnCorner.CornerRadius = UDim.new(0, 4)
-btnCorner.Parent = outfitBtn
         local btnPadding = Instance.new("UIPadding")
         btnPadding.PaddingLeft = UDim.new(0, 10)
         btnPadding.Parent = outfitBtn
@@ -718,9 +719,6 @@ btnCorner.Parent = outfitBtn
                     korbloxLBtn.Text = "✓ Korblox L"
                 end
                 
-                outfitBtn.MouseButton1Click:Connect(function()
-            local success = os.LoadOutfit(outfitName)
-            if success then
                 outfitBtn.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
                 task.wait(0.3)
                 outfitBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
@@ -728,7 +726,6 @@ btnCorner.Parent = outfitBtn
         end)
     end
     
-    -- THIS LINE IS IMPORTANT - ADD IT AT THE END
     outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, #outfits * 35)
 end
 
