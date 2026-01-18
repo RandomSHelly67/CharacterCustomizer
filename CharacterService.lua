@@ -284,48 +284,77 @@ function CharacterService.ApplyKorblox(enable, leg)
     
     leg = leg or "Right" -- Default to right leg
     
+    -- Find the leg parts for both R15 and R6
     local legName = leg == "Right" and "RightLowerLeg" or "LeftLowerLeg"
+    local upperLegName = leg == "Right" and "RightUpperLeg" or "LeftUpperLeg"
     local legR15 = character:FindFirstChild(legName)
+    local upperLegR15 = character:FindFirstChild(upperLegName)
     local legR6 = character:FindFirstChild(leg == "Right" and "Right Leg" or "Left Leg")
     
     local targetLeg = legR15 or legR6
-    if not targetLeg then return false end
+    if not targetLeg then 
+        warn("[CharacterService] Could not find leg: " .. leg)
+        return false 
+    end
     
     if enable then
+        -- Use the correct Korblox Deathspeaker package IDs
+        -- Right leg: 139607718, Left leg: 139607673
         local korbloxId = leg == "Right" and 139607718 or 139607673
         
-        local success, korbloxLeg = pcall(function()
+        local success, korbloxPackage = pcall(function()
             return game:GetObjects("rbxassetid://" .. tostring(korbloxId))[1]
         end)
         
-        if success and korbloxLeg then
+        if success and korbloxPackage then
             -- Store original leg properties
             if leg == "Right" then
                 CharacterService.OriginalRightLeg = {
                     Transparency = targetLeg.Transparency,
-                    Size = targetLeg.Size
+                    Size = targetLeg.Size,
+                    Color = targetLeg.Color
                 }
             else
                 CharacterService.OriginalLeftLeg = {
                     Transparency = targetLeg.Transparency,
-                    Size = targetLeg.Size
+                    Size = targetLeg.Size,
+                    Color = targetLeg.Color
                 }
             end
             
-            -- Apply Korblox mesh
-            for _, child in pairs(korbloxLeg:GetChildren()) do
-                if child:IsA("SpecialMesh") then
-                    local existingMesh = targetLeg:FindFirstChildOfClass("SpecialMesh")
-                    if existingMesh then
-                        existingMesh:Destroy()
-                    end
-                    child:Clone().Parent = targetLeg
-                elseif child:IsA("Decal") or child:IsA("Texture") then
-                    child:Clone().Parent = targetLeg
-                end
+            -- Find the mesh in the package
+            local mesh = nil
+            if korbloxPackage:IsA("MeshPart") then
+                mesh = korbloxPackage
+            else
+                mesh = korbloxPackage:FindFirstChildOfClass("MeshPart")
             end
             
-            korbloxLeg:Destroy()
+            if mesh then
+                -- Apply the Korblox mesh properties to the leg
+                targetLeg.MeshId = mesh.MeshId
+                targetLeg.TextureID = mesh.TextureID
+                
+                -- Make the leg slightly transparent to show the skeleton better
+                targetLeg.Transparency = 0
+                
+                print("[CharacterService] Korblox " .. leg .. " leg enabled (Mesh applied)")
+                
+                -- Also apply to upper leg if R15
+                if upperLegR15 and legR15 then
+                    upperLegR15.Transparency = 1
+                    print("[CharacterService] Made upper " .. leg .. " leg invisible for better effect")
+                end
+            else
+                -- Fallback: Just make legs invisible (fake Korblox)
+                targetLeg.Transparency = 1
+                if upperLegR15 then
+                    upperLegR15.Transparency = 1
+                end
+                warn("[CharacterService] Could not find Korblox mesh, using transparency fallback")
+            end
+            
+            korbloxPackage:Destroy()
             
             if leg == "Right" then
                 CharacterService.KorbloxRight = true
@@ -335,7 +364,7 @@ function CharacterService.ApplyKorblox(enable, leg)
             
             print("[CharacterService] Korblox " .. leg .. " leg enabled")
         else
-            warn("[CharacterService] Failed to load Korblox leg")
+            warn("[CharacterService] Failed to load Korblox leg: " .. tostring(korbloxPackage))
             return false
         end
     else
@@ -345,19 +374,26 @@ function CharacterService.ApplyKorblox(enable, leg)
         if originalData then
             targetLeg.Transparency = originalData.Transparency
             targetLeg.Size = originalData.Size
+            if originalData.Color then
+                targetLeg.Color = originalData.Color
+            end
             
-            -- Remove Korblox mesh
-            for _, child in pairs(targetLeg:GetChildren()) do
-                if child:IsA("SpecialMesh") or child:IsA("Decal") or child:IsA("Texture") then
-                    child:Destroy()
-                end
+            -- Reset mesh
+            targetLeg.MeshId = ""
+            targetLeg.TextureID = ""
+            
+            -- Restore upper leg if R15
+            if upperLegR15 then
+                upperLegR15.Transparency = 0
             end
         end
         
         if leg == "Right" then
             CharacterService.KorbloxRight = false
+            CharacterService.OriginalRightLeg = nil
         else
             CharacterService.KorbloxLeft = false
+            CharacterService.OriginalLeftLeg = nil
         end
         
         print("[CharacterService] Korblox " .. leg .. " leg disabled")
