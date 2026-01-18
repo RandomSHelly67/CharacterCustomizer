@@ -76,11 +76,32 @@ function ItemEditorService.SetScale(accessoryId, scale)
     
     local id = tostring(accessoryId)
     
+    -- ADDED: Validate scale values
+    scale = Vector3.new(
+        math.max(0.1, scale.X),
+        math.max(0.1, scale.Y),
+        math.max(0.1, scale.Z)
+    )
+    
     -- Store adjustment
     if not ItemEditorService.Adjustments[id] then
         ItemEditorService.Adjustments[id] = {}
     end
     ItemEditorService.Adjustments[id].scale = scale
+    
+    -- Apply to accessory
+    local accessory, handle = findAccessoryById(character, accessoryId)
+    if accessory and handle then
+        local mesh = handle:FindFirstChildOfClass("SpecialMesh")
+        if mesh then
+            mesh.Scale = scale
+            print("[ItemEditor] Scale set for " .. id .. ": " .. tostring(scale))
+            return true
+        end
+    end
+    
+    return false
+end
     
     -- Apply to accessory
     local accessory, handle = findAccessoryById(character, accessoryId)
@@ -124,6 +145,35 @@ function ItemEditorService.SetRotation(accessoryId, rotation)
         ItemEditorService.Adjustments[id] = {}
     end
     ItemEditorService.Adjustments[id].rotation = rotation
+    
+    -- Apply to accessory
+    local accessory, handle = findAccessoryById(character, accessoryId)
+    if accessory and handle then
+        local weld = handle:FindFirstChildOfClass("Weld")
+        if weld then
+            -- FIXED: Get position and apply both position and rotation together
+            local pos = ItemEditorService.Adjustments[id].position or Vector3.new(0, 0, 0)
+            local rotCFrame = CFrame.Angles(
+                math.rad(rotation.X),
+                math.rad(rotation.Y),
+                math.rad(rotation.Z)
+            )
+            
+            -- Store original C0 if not already stored
+            if not ItemEditorService.Adjustments[id].originalC0 then
+                ItemEditorService.Adjustments[id].originalC0 = weld.C0
+            end
+            
+            -- Apply from original
+            weld.C0 = ItemEditorService.Adjustments[id].originalC0 * CFrame.new(pos) * rotCFrame
+            
+            print("[ItemEditor] Rotation set for " .. id .. ": " .. tostring(rotation))
+            return true
+        end
+    end
+    
+    return false
+end
     
     -- Apply to accessory
     local accessory, handle = findAccessoryById(character, accessoryId)
