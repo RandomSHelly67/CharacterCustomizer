@@ -130,10 +130,11 @@ function GuiService.CreateMainFrame()
     -- Content Frame
     local contentFrame = Instance.new("Frame")
     contentFrame.Name = "ContentFrame"
-    contentFrame.Size = UDim2.new(1, -20, 1, -55)
+    contentFrame.Size = UDim2.new(1, -20, 1, -55)  -- This should stay the same
     contentFrame.Position = UDim2.new(0, 10, 0, 50)
     contentFrame.BackgroundTransparency = 1
     contentFrame.Parent = mainFrame
+    contentFrame.ClipsDescendants = true  -- ADD THIS LINE to clip overflow
     
     -- Item ID Input
     local idLabel = Instance.new("TextLabel")
@@ -342,10 +343,11 @@ function GuiService.CreateMainFrame()
     itemEditorBtnCorner.Parent = itemEditorBtn
     
     -- Outfit Management
-    local outfitLabel = Instance.new("TextLabel")
-    outfitLabel.Size = UDim2.new(1, 0, 0, 20)
-    outfitLabel.Position = UDim2.new(0, 0, 0, 398)
-    outfitLabel.BackgroundTransparency = 1
+local outfitLabel = Instance.new("TextLabel")
+outfitLabel.Size = UDim2.new(1, 0, 0, 20)
+outfitLabel.Position = UDim2.new(0, 0, 0, 353)  -- Keep this
+outfitLabel.BackgroundTransparency = 1
+outfitLabel.Text = "💾 Outfit Management"
     outfitLabel.Text = "💾 Outfit Management"
     outfitLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
     outfitLabel.TextSize = 14
@@ -356,7 +358,7 @@ function GuiService.CreateMainFrame()
     local outfitInput = Instance.new("TextBox")
     outfitInput.Name = "OutfitInput"
     outfitInput.Size = UDim2.new(1, 0, 0, 35)
-    outfitInput.Position = UDim2.new(0, 0, 0, 422)
+    outfitInput.Position = UDim2.new(0, 0, 0, 377)  -- Keep this
     outfitInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
     outfitInput.BackgroundTransparency = 0.3
     outfitInput.BorderSizePixel = 0
@@ -393,7 +395,7 @@ function GuiService.CreateMainFrame()
 -- Saved Outfits List
 local outfitListLabel = Instance.new("TextLabel")
 outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
-outfitListLabel.Position = UDim2.new(0, 0, 0, 512)
+outfitListLabel.Position = UDim2.new(0, 0, 0, 467)  -- Keep this
 outfitListLabel.BackgroundTransparency = 1
 outfitListLabel.Text = "📁 Saved Outfits:"
 outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
@@ -404,8 +406,8 @@ outfitListLabel.Parent = contentFrame
 
 local outfitScrollFrame = Instance.new("ScrollingFrame")
 outfitScrollFrame.Name = "OutfitScrollFrame"
-outfitScrollFrame.Size = UDim2.new(1, 0, 0, 160)  -- CHANGED: from 80 to 160
-outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
+outfitScrollFrame.Size = UDim2.new(1, 0, 0, 160)  -- CHANGED: 80 → 160
+outfitScrollFrame.Position = UDim2.new(0, 0, 0, 489)  -- Keep this
 outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
 outfitScrollFrame.BackgroundTransparency = 0.4
 outfitScrollFrame.BorderSizePixel = 0
@@ -676,6 +678,8 @@ local function updateOutfitList()
     
     local outfits = os.ListOutfits()
     
+    print("[GUI] Found " .. #outfits .. " outfits")  -- ADD THIS DEBUG LINE
+        
     for i, outfitName in ipairs(outfits) do
         local outfitBtn = Instance.new("TextButton")
         outfitBtn.Name = outfitName
@@ -727,6 +731,7 @@ local function updateOutfitList()
     end
     
     outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, #outfits * 35)
+    print("[GUI] Canvas size set to: " .. (#outfits * 35))  -- ADD THIS DEBUG LINE
 end
 
 saveOutfitBtn.MouseButton1Click:Connect(function()
