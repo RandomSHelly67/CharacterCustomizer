@@ -43,8 +43,8 @@ function GuiService.CreateMainFrame()
     -- Main Frame with glass effect
     mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 450, 0, 660)
-    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -330)
+    mainFrame.Size = UDim2.new(0, 450, 0, 700)  -- CHANGED: from 620 to 700
+    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -350)  -- CHANGED: from -310 to -350
     mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
     mainFrame.BackgroundTransparency = 0.15
     mainFrame.BorderSizePixel = 0
@@ -404,7 +404,7 @@ outfitListLabel.Parent = contentFrame
 
 local outfitScrollFrame = Instance.new("ScrollingFrame")
 outfitScrollFrame.Name = "OutfitScrollFrame"
-outfitScrollFrame.Size = UDim2.new(1, 0, 0, 80)
+outfitScrollFrame.Size = UDim2.new(1, 0, 0, 160)  -- CHANGED: from 80 to 160
 outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
 outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
 outfitScrollFrame.BackgroundTransparency = 0.4
@@ -465,7 +465,7 @@ minimizeBtn.MouseButton1Click:Connect(function()
             minimizeBtn.Text = "□"
         else
             contentFrame.Visible = true
-            mainFrame.Size = UDim2.new(0, 450, 0, 660)  -- Changed from 620
+            mainFrame.Size = UDim2.new(0, 450, 0, 700)  -- Changed from 620
             minimizeBtn.Text = "_"
         end
     end)
