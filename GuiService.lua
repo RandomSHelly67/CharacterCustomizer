@@ -599,6 +599,34 @@ function GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn,
             GuiService.UpdateEquippedItems()
         end
     end)
+
+    -- Undo Button
+    undoBtn.MouseButton1Click:Connect(function()
+        local success = cs.Undo()
+        if success then
+            undoBtn.Text = "↶ Undone!"
+            undoBtn.BackgroundColor3 = Color3.fromRGB(180, 130, 220)
+            task.wait(0.5)
+            undoBtn.Text = "↶ Undo"
+            undoBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 200)
+        else
+            undoBtn.Text = "Nothing to undo"
+            undoBtn.BackgroundColor3 = Color3.fromRGB(220, 100, 100)
+            task.wait(0.5)
+            undoBtn.Text = "↶ Undo"
+            undoBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 200)
+        end
+    end)
+    
+    -- Favorites Button
+    favoritesBtn.MouseButton1Click:Connect(function()
+        GuiService.OpenFavoritesWindow()
+    end)
+    
+    -- Item Editor Button
+    itemEditorBtn.MouseButton1Click:Connect(function()
+        GuiService.OpenItemEditorWindow()
+    end)
     
     -- Outfit Management
     local function updateOutfitList()
@@ -717,6 +745,7 @@ end)
 
 updateOutfitList()
 end
+
 function GuiService.CreateEquippedFrame()
 equippedFrame = Instance.new("Frame")
 equippedFrame.Name = "EquippedFrame"
@@ -736,6 +765,326 @@ equippedFrameStroke.Color = Color3.fromRGB(100, 100, 150)
 equippedFrameStroke.Thickness = 1
 equippedFrameStroke.Transparency = 0.5
 equippedFrameStroke.Parent = equippedFrame
+
+function GuiService.CreateFavoritesFrame()
+    local favoritesFrame = Instance.new("Frame")
+    favoritesFrame.Name = "FavoritesFrame"
+    favoritesFrame.Size = UDim2.new(0, 400, 0, 450)
+    favoritesFrame.Position = UDim2.new(0.5, -200, 0.5, -225)
+    favoritesFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+    favoritesFrame.BackgroundTransparency = 0.15
+    favoritesFrame.BorderSizePixel = 0
+    favoritesFrame.Visible = false
+    favoritesFrame.Parent = screenGui
+    
+    local favFrameCorner = Instance.new("UICorner")
+    favFrameCorner.CornerRadius = UDim.new(0, 12)
+    favFrameCorner.Parent = favoritesFrame
+    
+    local favFrameStroke = Instance.new("UIStroke")
+    favFrameStroke.Color = Color3.fromRGB(100, 100, 150)
+    favFrameStroke.Thickness = 1
+    favFrameStroke.Transparency = 0.5
+    favFrameStroke.Parent = favoritesFrame
+    
+    -- Title Bar
+    local favTitleBar = Instance.new("Frame")
+    favTitleBar.Size = UDim2.new(1, 0, 0, 45)
+    favTitleBar.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+    favTitleBar.BackgroundTransparency = 0.2
+    favTitleBar.BorderSizePixel = 0
+    favTitleBar.Parent = favoritesFrame
+    
+    local favTitleBarCorner = Instance.new("UICorner")
+    favTitleBarCorner.CornerRadius = UDim.new(0, 12)
+    favTitleBarCorner.Parent = favTitleBar
+    
+    local favTitleBarBottom = Instance.new("Frame")
+    favTitleBarBottom.Size = UDim2.new(1, 0, 0, 12)
+    favTitleBarBottom.Position = UDim2.new(0, 0, 1, -12)
+    favTitleBarBottom.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+    favTitleBarBottom.BackgroundTransparency = 0.2
+    favTitleBarBottom.BorderSizePixel = 0
+    favTitleBarBottom.Parent = favTitleBar
+    
+    local favTitle = Instance.new("TextLabel")
+    favTitle.Size = UDim2.new(1, -50, 1, 0)
+    favTitle.Position = UDim2.new(0, 15, 0, 0)
+    favTitle.BackgroundTransparency = 1
+    favTitle.Text = "⭐ Favorite Items"
+    favTitle.TextColor3 = Color3.fromRGB(200, 200, 255)
+    favTitle.TextSize = 18
+    favTitle.Font = Enum.Font.GothamBold
+    favTitle.TextXAlignment = Enum.TextXAlignment.Left
+    favTitle.Parent = favTitleBar
+    
+    local favCloseBtn = Instance.new("TextButton")
+    favCloseBtn.Size = UDim2.new(0, 35, 0, 35)
+    favCloseBtn.Position = UDim2.new(1, -40, 0, 5)
+    favCloseBtn.BackgroundColor3 = Color3.fromRGB(220, 80, 80)
+    favCloseBtn.BackgroundTransparency = 0.2
+    favCloseBtn.BorderSizePixel = 0
+    favCloseBtn.Text = "×"
+    favCloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    favCloseBtn.TextSize = 24
+    favCloseBtn.Font = Enum.Font.GothamBold
+    favCloseBtn.Parent = favTitleBar
+    
+    local favCloseBtnCorner = Instance.new("UICorner")
+    favCloseBtnCorner.CornerRadius = UDim.new(0, 6)
+    favCloseBtnCorner.Parent = favCloseBtn
+    
+    -- Add to Favorites Section
+    local addLabel = Instance.new("TextLabel")
+    addLabel.Size = UDim2.new(1, -20, 0, 18)
+    addLabel.Position = UDim2.new(0, 10, 0, 55)
+    addLabel.BackgroundTransparency = 1
+    addLabel.Text = "Add to Favorites:"
+    addLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
+    addLabel.TextSize = 13
+    addLabel.Font = Enum.Font.Gotham
+    addLabel.TextXAlignment = Enum.TextXAlignment.Left
+    addLabel.Parent = favoritesFrame
+    
+    local favIdInput = Instance.new("TextBox")
+    favIdInput.Name = "FavIdInput"
+    favIdInput.Size = UDim2.new(0.6, -5, 0, 35)
+    favIdInput.Position = UDim2.new(0, 10, 0, 77)
+    favIdInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+    favIdInput.BackgroundTransparency = 0.3
+    favIdInput.BorderSizePixel = 0
+    favIdInput.PlaceholderText = "Item ID..."
+    favIdInput.Text = ""
+    favIdInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+    favIdInput.TextSize = 14
+    favIdInput.Font = Enum.Font.Gotham
+    favIdInput.ClearTextOnFocus = false
+    favIdInput.Parent = favoritesFrame
+    
+    local favIdInputCorner = Instance.new("UICorner")
+    favIdInputCorner.CornerRadius = UDim.new(0, 6)
+    favIdInputCorner.Parent = favIdInput
+    
+    local favIdInputStroke = Instance.new("UIStroke")
+    favIdInputStroke.Color = Color3.fromRGB(80, 80, 120)
+    favIdInputStroke.Thickness = 1
+    favIdInputStroke.Transparency = 0.6
+    favIdInputStroke.Parent = favIdInput
+    
+    local favNameInput = Instance.new("TextBox")
+    favNameInput.Name = "FavNameInput"
+    favNameInput.Size = UDim2.new(0.4, -15, 0, 35)
+    favNameInput.Position = UDim2.new(0.6, 5, 0, 77)
+    favNameInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+    favNameInput.BackgroundTransparency = 0.3
+    favNameInput.BorderSizePixel = 0
+    favNameInput.PlaceholderText = "Name..."
+    favNameInput.Text = ""
+    favNameInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+    favNameInput.TextSize = 14
+    favNameInput.Font = Enum.Font.Gotham
+    favNameInput.ClearTextOnFocus = false
+    favNameInput.Parent = favoritesFrame
+    
+    local favNameInputCorner = Instance.new("UICorner")
+    favNameInputCorner.CornerRadius = UDim.new(0, 6)
+    favNameInputCorner.Parent = favNameInput
+    
+    local favNameInputStroke = Instance.new("UIStroke")
+    favNameInputStroke.Color = Color3.fromRGB(80, 80, 120)
+    favNameInputStroke.Thickness = 1
+    favNameInputStroke.Transparency = 0.6
+    favNameInputStroke.Parent = favNameInput
+    
+    local addFavBtn = Instance.new("TextButton")
+    addFavBtn.Name = "AddFavButton"
+    addFavBtn.Size = UDim2.new(1, -20, 0, 35)
+    addFavBtn.Position = UDim2.new(0, 10, 0, 122)
+    addFavBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
+    addFavBtn.BackgroundTransparency = 0.2
+    addFavBtn.BorderSizePixel = 0
+    addFavBtn.Text = "⭐ Add to Favorites"
+    addFavBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    addFavBtn.TextSize = 14
+    addFavBtn.Font = Enum.Font.GothamBold
+    addFavBtn.Parent = favoritesFrame
+    
+    local addFavBtnCorner = Instance.new("UICorner")
+    addFavBtnCorner.CornerRadius = UDim.new(0, 6)
+    addFavBtnCorner.Parent = addFavBtn
+    
+    -- Favorites List
+    local favListLabel = Instance.new("TextLabel")
+    favListLabel.Size = UDim2.new(1, -20, 0, 18)
+    favListLabel.Position = UDim2.new(0, 10, 0, 167)
+    favListLabel.BackgroundTransparency = 1
+    favListLabel.Text = "Your Favorites:"
+    favListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
+    favListLabel.TextSize = 13
+    favListLabel.Font = Enum.Font.Gotham
+    favListLabel.TextXAlignment = Enum.TextXAlignment.Left
+    favListLabel.Parent = favoritesFrame
+    
+    local favScrollFrame = Instance.new("ScrollingFrame")
+    favScrollFrame.Name = "FavScrollFrame"
+    favScrollFrame.Size = UDim2.new(1, -20, 0, 240)
+    favScrollFrame.Position = UDim2.new(0, 10, 0, 189)
+    favScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+    favScrollFrame.BackgroundTransparency = 0.4
+    favScrollFrame.BorderSizePixel = 0
+    favScrollFrame.ScrollBarThickness = 4
+    favScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
+    favScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    favScrollFrame.ClipsDescendants = true
+    favScrollFrame.Parent = favoritesFrame
+    
+    local favScrollCorner = Instance.new("UICorner")
+    favScrollCorner.CornerRadius = UDim.new(0, 6)
+    favScrollCorner.Parent = favScrollFrame
+    
+    local favListLayout = Instance.new("UIListLayout")
+    favListLayout.SortOrder = Enum.SortOrder.Name
+    favListLayout.Padding = UDim.new(0, 5)
+    favListLayout.Parent = favScrollFrame
+    
+    -- Button Logic
+    local cs = GuiService.CharacterService
+    
+    addFavBtn.MouseButton1Click:Connect(function()
+        local id = tonumber(favIdInput.Text)
+        local name = favNameInput.Text
+        
+        if id and name ~= "" then
+            cs.AddToFavorites(id, name)
+            cs.SaveFavorites()
+            GuiService.UpdateFavorites()
+            
+            favIdInput.Text = ""
+            favNameInput.Text = ""
+            
+            addFavBtn.Text = "⭐ Added!"
+            addFavBtn.BackgroundColor3 = Color3.fromRGB(255, 220, 130)
+            task.wait(0.5)
+            addFavBtn.Text = "⭐ Add to Favorites"
+            addFavBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
+        else
+            addFavBtn.Text = "Need ID & Name!"
+            addFavBtn.BackgroundColor3 = Color3.fromRGB(220, 100, 100)
+            task.wait(0.5)
+            addFavBtn.Text = "⭐ Add to Favorites"
+            addFavBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
+        end
+    end)
+    
+    favCloseBtn.MouseButton1Click:Connect(function()
+        favoritesFrame.Visible = false
+    end)
+    
+    GuiService.MakeDraggable(favTitleBar, favoritesFrame)
+    
+    return favoritesFrame
+end
+
+function GuiService.UpdateFavorites()
+    local cs = GuiService.CharacterService
+    local favFrame = screenGui:FindFirstChild("FavoritesFrame")
+    if not favFrame then return end
+    
+    local favScrollFrame = favFrame:FindFirstChild("FavScrollFrame")
+    if not favScrollFrame then return end
+    
+    for _, child in pairs(favScrollFrame:GetChildren()) do
+        if child:IsA("Frame") then
+            child:Destroy()
+        end
+    end
+    
+    local yOffset = 0
+    
+    for id, data in pairs(cs.Favorites) do
+        local favItem = Instance.new("Frame")
+        favItem.Size = UDim2.new(1, -10, 0, 40)
+        favItem.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
+        favItem.BackgroundTransparency = 0.3
+        favItem.BorderSizePixel = 0
+        favItem.Parent = favScrollFrame
+        
+        local favItemCorner = Instance.new("UICorner")
+        favItemCorner.CornerRadius = UDim.new(0, 6)
+        favItemCorner.Parent = favItem
+        
+        local favLabel = Instance.new("TextLabel")
+        favLabel.Size = UDim2.new(1, -100, 1, 0)
+        favLabel.Position = UDim2.new(0, 10, 0, 0)
+        favLabel.BackgroundTransparency = 1
+        favLabel.Text = "⭐ " .. data.name .. " (" .. data.id .. ")"
+        favLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
+        favLabel.TextSize = 13
+        favLabel.Font = Enum.Font.Gotham
+        favLabel.TextXAlignment = Enum.TextXAlignment.Left
+        favLabel.TextTruncate = Enum.TextTruncate.AtEnd
+        favLabel.Parent = favItem
+        
+        local applyBtn = Instance.new("TextButton")
+        applyBtn.Size = UDim2.new(0, 45, 0, 30)
+        applyBtn.Position = UDim2.new(1, -90, 0.5, -15)
+        applyBtn.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
+        applyBtn.BackgroundTransparency = 0.2
+        applyBtn.BorderSizePixel = 0
+        applyBtn.Text = "✓"
+        applyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        applyBtn.TextSize = 16
+        applyBtn.Font = Enum.Font.GothamBold
+        applyBtn.Parent = favItem
+        
+        local applyBtnCorner = Instance.new("UICorner")
+        applyBtnCorner.CornerRadius = UDim.new(0, 4)
+        applyBtnCorner.Parent = applyBtn
+        
+        local removeBtn = Instance.new("TextButton")
+        removeBtn.Size = UDim2.new(0, 35, 0, 30)
+        removeBtn.Position = UDim2.new(1, -40, 0.5, -15)
+        removeBtn.BackgroundColor3 = Color3.fromRGB(220, 80, 80)
+        removeBtn.BackgroundTransparency = 0.2
+        removeBtn.BorderSizePixel = 0
+        removeBtn.Text = "✕"
+        removeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        removeBtn.TextSize = 16
+        removeBtn.Font = Enum.Font.GothamBold
+        removeBtn.Parent = favItem
+        
+        local removeBtnCorner = Instance.new("UICorner")
+        removeBtnCorner.CornerRadius = UDim.new(0, 4)
+        removeBtnCorner.Parent = removeBtn
+        
+        applyBtn.MouseButton1Click:Connect(function()
+            cs.AddAccessory(data.id, "Head") -- Default to head, could add category selection
+            applyBtn.BackgroundColor3 = Color3.fromRGB(100, 220, 150)
+            task.wait(0.3)
+            applyBtn.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
+        end)
+        
+        removeBtn.MouseButton1Click:Connect(function()
+            cs.RemoveFromFavorites(data.id)
+            cs.SaveFavorites()
+            GuiService.UpdateFavorites()
+        end)
+        
+        yOffset = yOffset + 45
+    end
+    
+    favScrollFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
+end
+
+function GuiService.OpenFavoritesWindow()
+    local favFrame = screenGui:FindFirstChild("FavoritesFrame")
+    if not favFrame then
+        favFrame = GuiService.CreateFavoritesFrame()
+    end
+    
+    favFrame.Visible = true
+    GuiService.UpdateFavorites()
+end
 
 -- Title Bar
 local equippedTitleBar = Instance.new("Frame")
