@@ -44,8 +44,8 @@ function GuiService.CreateMainFrame()
     -- Main Frame with glass effect
     mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 450, 0, 700)  -- CHANGED: from 620 to 700
-    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -350)  -- CHANGED: from -310 to -350
+    mainFrame.Size = UDim2.new(0, 450, 0, 729)
+    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -364.5)
     mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
     mainFrame.BackgroundTransparency = 0.15
     mainFrame.BorderSizePixel = 0
@@ -315,7 +315,7 @@ function GuiService.CreateMainFrame()
     -- Clear and View Equipped Buttons
     local clearBtn = Instance.new("TextButton")
     clearBtn.Size = UDim2.new(0.48, 0, 0, 35)
-    clearBtn.Position = UDim2.new(0, 0, 0, 308)
+    clearBtn.Position = UDim2.new(0, 0, 0, 377)
     clearBtn.BackgroundColor3 = Color3.fromRGB(220, 80, 80)
     clearBtn.BackgroundTransparency = 0.3
     clearBtn.BorderSizePixel = 0
@@ -331,7 +331,7 @@ function GuiService.CreateMainFrame()
     
     local viewEquippedBtn = Instance.new("TextButton")
     viewEquippedBtn.Size = UDim2.new(0.48, 0, 0, 35)
-    viewEquippedBtn.Position = UDim2.new(0.52, 0, 0, 308)
+    viewEquippedBtn.Position = UDim2.new(0.52, 0, 0, 377)
     viewEquippedBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 180)
     viewEquippedBtn.BackgroundTransparency = 0.3
     viewEquippedBtn.BorderSizePixel = 0
@@ -366,7 +366,7 @@ function GuiService.CreateMainFrame()
     local favoritesBtn = Instance.new("TextButton")
     favoritesBtn.Name = "FavoritesButton"
     favoritesBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    favoritesBtn.Position = UDim2.new(0.345, 0, 0, 353)
+    favoritesBtn.Position = UDim2.new(0.345, 0, 0, 422)
     favoritesBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
     favoritesBtn.BackgroundTransparency = 0.3
     favoritesBtn.BorderSizePixel = 0
@@ -383,7 +383,7 @@ function GuiService.CreateMainFrame()
     local itemEditorBtn = Instance.new("TextButton")
     itemEditorBtn.Name = "ItemEditorButton"
     itemEditorBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    itemEditorBtn.Position = UDim2.new(0.69, 0, 0, 353)
+    itemEditorBtn.Position = UDim2.new(0.69, 0, 0, 422)
     itemEditorBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 200)
     itemEditorBtn.BackgroundTransparency = 0.3
     itemEditorBtn.BorderSizePixel = 0
@@ -400,7 +400,7 @@ function GuiService.CreateMainFrame()
     -- Outfit Management
 local outfitLabel = Instance.new("TextLabel")
 outfitLabel.Size = UDim2.new(1, 0, 0, 20)
-outfitLabel.Position = UDim2.new(0, 0, 0, 353)  -- Keep this
+outfitLabel.Position = UDim2.new(0, 0, 0, 467)  -- Keep this
 outfitLabel.BackgroundTransparency = 1
 outfitLabel.Text = "💾 Outfit Management"
     outfitLabel.Text = "💾 Outfit Management"
@@ -435,15 +435,15 @@ outfitLabel.Text = "💾 Outfit Management"
     outfitInputStroke.Transparency = 0.6
     outfitInputStroke.Parent = outfitInput
     
-    local saveOutfitBtn = createCategoryButton("Save", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 467)})
+    local saveOutfitBtn = createCategoryButton("Save", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 536)})
     saveOutfitBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 220)
     saveOutfitBtn.Parent = contentFrame
     
-    local loadOutfitBtn = createCategoryButton("Load", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 467)})
+    local loadOutfitBtn = createCategoryButton("Load", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 536)})
     loadOutfitBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
     loadOutfitBtn.Parent = contentFrame
     
-    local deleteOutfitBtn = createCategoryButton("Delete", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 467)})
+    local deleteOutfitBtn = createCategoryButton("Delete", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 536)})
     deleteOutfitBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
     deleteOutfitBtn.Parent = contentFrame
     
@@ -502,7 +502,7 @@ outfitLabel.Text = "💾 Outfit Management"
     -- Outfit Management
     local outfitLabel = Instance.new("TextLabel")
     outfitLabel.Size = UDim2.new(1, 0, 0, 20)
-    outfitLabel.Position = UDim2.new(0, 0, 0, 398)
+    outfitLabel.Position = UDim2.new(0, 0, 0, 467)
     outfitLabel.BackgroundTransparency = 1
     outfitLabel.Text = "💾 Outfit Management"
     outfitLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
@@ -514,7 +514,7 @@ outfitLabel.Text = "💾 Outfit Management"
     local outfitInput = Instance.new("TextBox")
     outfitInput.Name = "OutfitInput"
     outfitInput.Size = UDim2.new(1, 0, 0, 35)
-    outfitInput.Position = UDim2.new(0, 0, 0, 422)
+    outfitInput.Position = UDim2.new(0, 0, 0, 491)
     outfitInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
     outfitInput.BackgroundTransparency = 0.3
     outfitInput.BorderSizePixel = 0
@@ -551,7 +551,7 @@ outfitLabel.Text = "💾 Outfit Management"
     -- Saved Outfits List
     local outfitListLabel = Instance.new("TextLabel")
     outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
-    outfitListLabel.Position = UDim2.new(0, 0, 0, 512)
+    outfitListLabel.Position = UDim2.new(0, 0, 0, 581)
     outfitListLabel.BackgroundTransparency = 1
     outfitListLabel.Text = "📁 Saved Outfits:"
     outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
@@ -563,7 +563,7 @@ outfitLabel.Text = "💾 Outfit Management"
     local outfitScrollFrame = Instance.new("ScrollingFrame")
     outfitScrollFrame.Name = "OutfitScrollFrame"
     outfitScrollFrame.Size = UDim2.new(1, 0, 0, 150)
-    outfitScrollFrame.Position = UDim2.new(0, 0, 0, 534)
+    outfitScrollFrame.Position = UDim2.new(0, 0, 0, 603)
     outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
     outfitScrollFrame.BackgroundTransparency = 0.4
     outfitScrollFrame.BorderSizePixel = 0
@@ -584,10 +584,11 @@ outfitLabel.Text = "💾 Outfit Management"
 
     -- Setup Button Logic
     GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
-        headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
-        headlessBtn, korbloxRBtn, korbloxLBtn,
-        undoBtn, favoritesBtn, itemEditorBtn,
-        outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
+    headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
+    headlessBtn, korbloxRBtn, korbloxLBtn,
+    userIdInput, copyAvatarBtn,
+    undoBtn, favoritesBtn, itemEditorBtn,
+    outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
     
     -- Make draggable
     GuiService.MakeDraggable(titleBar, mainFrame)
@@ -596,6 +597,7 @@ end
 function GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn,
     headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn,
     headlessBtn, korbloxRBtn, korbloxLBtn,
+    userIdInput, copyAvatarBtn,
     undoBtn, favoritesBtn, itemEditorBtn,
     outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
     
@@ -725,6 +727,42 @@ function GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn,
             korbloxLBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
             korbloxLBtn.Text = "Korblox L"
         end
+    end)
+
+    -- Copy Avatar Button
+    copyAvatarBtn.MouseButton1Click:Connect(function()
+        local userId = userIdInput.Text
+        if userId == "" then
+            copyAvatarBtn.Text = "Enter ID!"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(220, 100, 100)
+            task.wait(0.5)
+            copyAvatarBtn.Text = "📥 Copy"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+            return
+        end
+        
+        local acs = GuiService.AvatarCopierService
+        
+        copyAvatarBtn.Text = "Copying..."
+        copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(150, 150, 200)
+        
+        local success = acs.CopyAvatar(userId, function(status)
+            copyAvatarBtn.Text = status
+        end)
+        
+        task.wait(0.5)
+        
+        if success then
+            copyAvatarBtn.Text = "✓ Copied!"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(100, 220, 150)
+        else
+            copyAvatarBtn.Text = "Failed!"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(220, 100, 100)
+        end
+        
+        task.wait(1)
+        copyAvatarBtn.Text = "📥 Copy"
+        copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
     end)
     
     -- Clear All
