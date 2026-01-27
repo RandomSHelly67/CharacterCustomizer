@@ -15,10 +15,11 @@ local screenGui
 local mainFrame
 local equippedFrame
 
-function GuiService.Init(CharacterService, OutfitService, ItemEditorService)
+function GuiService.Init(CharacterService, OutfitService, ItemEditorService, AvatarCopierService)
     GuiService.CharacterService = CharacterService
     GuiService.OutfitService = OutfitService
     GuiService.ItemEditorService = ItemEditorService
+    GuiService.AvatarCopierService = AvatarCopierService
     
     GuiService.CreateGui()
     
