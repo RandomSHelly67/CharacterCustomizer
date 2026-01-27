@@ -54,7 +54,8 @@ log("Starting bootstrap... | v2.6-7 Outfit list Update")
 local CharacterService = requireModule("CharacterService")
 local OutfitService = requireModule("OutfitService")
 local ItemEditorService = requireModule("ItemEditorService")
-local GuiService = requireModule("GuiService") -- NEW
+local AvatarCopierService = requireModule("AvatarCopierService")
+local GuiService = requireModule("GuiService")
 
 -- Initialize CharacterService
 log("Initializing CharacterService...")
