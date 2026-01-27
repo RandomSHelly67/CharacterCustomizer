@@ -257,6 +257,60 @@ function GuiService.CreateMainFrame()
     
     local korbloxLBtn = createCategoryButton("Korblox L", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 263)})
     korbloxLBtn.Parent = contentFrame
+
+    -- Avatar Copier Section
+    local avatarCopierLabel = Instance.new("TextLabel")
+    avatarCopierLabel.Size = UDim2.new(1, 0, 0, 20)
+    avatarCopierLabel.Position = UDim2.new(0, 0, 0, 308)
+    avatarCopierLabel.BackgroundTransparency = 1
+    avatarCopierLabel.Text = "👤 Copy Avatar"
+    avatarCopierLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
+    avatarCopierLabel.TextSize = 14
+    avatarCopierLabel.Font = Enum.Font.GothamBold
+    avatarCopierLabel.TextXAlignment = Enum.TextXAlignment.Left
+    avatarCopierLabel.Parent = contentFrame
+    
+    local userIdInput = Instance.new("TextBox")
+    userIdInput.Name = "UserIdInput"
+    userIdInput.Size = UDim2.new(0.65, -5, 0, 35)
+    userIdInput.Position = UDim2.new(0, 0, 0, 332)
+    userIdInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+    userIdInput.BackgroundTransparency = 0.3
+    userIdInput.BorderSizePixel = 0
+    userIdInput.PlaceholderText = "Enter user ID..."
+    userIdInput.Text = ""
+    userIdInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+    userIdInput.TextSize = 14
+    userIdInput.Font = Enum.Font.Gotham
+    userIdInput.ClearTextOnFocus = false
+    userIdInput.Parent = contentFrame
+    
+    local userIdInputCorner = Instance.new("UICorner")
+    userIdInputCorner.CornerRadius = UDim.new(0, 6)
+    userIdInputCorner.Parent = userIdInput
+    
+    local userIdInputStroke = Instance.new("UIStroke")
+    userIdInputStroke.Color = Color3.fromRGB(80, 80, 120)
+    userIdInputStroke.Thickness = 1
+    userIdInputStroke.Transparency = 0.6
+    userIdInputStroke.Parent = userIdInput
+    
+    local copyAvatarBtn = Instance.new("TextButton")
+    copyAvatarBtn.Name = "CopyAvatarButton"
+    copyAvatarBtn.Size = UDim2.new(0.35, -5, 0, 35)
+    copyAvatarBtn.Position = UDim2.new(0.65, 5, 0, 332)
+    copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+    copyAvatarBtn.BackgroundTransparency = 0.2
+    copyAvatarBtn.BorderSizePixel = 0
+    copyAvatarBtn.Text = "📥 Copy"
+    copyAvatarBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    copyAvatarBtn.TextSize = 14
+    copyAvatarBtn.Font = Enum.Font.GothamBold
+    copyAvatarBtn.Parent = contentFrame
+    
+    local copyAvatarBtnCorner = Instance.new("UICorner")
+    copyAvatarBtnCorner.CornerRadius = UDim.new(0, 6)
+    copyAvatarBtnCorner.Parent = copyAvatarBtn
     
     -- Clear and View Equipped Buttons
     local clearBtn = Instance.new("TextButton")
