@@ -43,11 +43,11 @@ function GuiService.CreateGui()
 end
 
 function GuiService.CreateMainFrame()
-    -- Main Frame with glass effect
+    -- Main Frame
     mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 450, 0, 729)
-    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -364.5)
+    mainFrame.Size = UDim2.new(0, 450, 0, 730)
+    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -365)
     mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
     mainFrame.BackgroundTransparency = 0.15
     mainFrame.BorderSizePixel = 0
@@ -95,7 +95,6 @@ function GuiService.CreateMainFrame()
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Parent = titleBar
     
-    -- Minimize Button
     local minimizeBtn = Instance.new("TextButton")
     minimizeBtn.Name = "MinimizeButton"
     minimizeBtn.Size = UDim2.new(0, 35, 0, 35)
@@ -113,7 +112,6 @@ function GuiService.CreateMainFrame()
     minimizeBtnCorner.CornerRadius = UDim.new(0, 6)
     minimizeBtnCorner.Parent = minimizeBtn
     
-    -- Close Button
     local closeBtn = Instance.new("TextButton")
     closeBtn.Size = UDim2.new(0, 35, 0, 35)
     closeBtn.Position = UDim2.new(1, -40, 0, 5)
@@ -133,74 +131,23 @@ function GuiService.CreateMainFrame()
     -- Content Frame
     local contentFrame = Instance.new("Frame")
     contentFrame.Name = "ContentFrame"
-    contentFrame.Size = UDim2.new(1, -20, 1, -55)  -- This should stay the same
+    contentFrame.Size = UDim2.new(1, -20, 1, -55)
     contentFrame.Position = UDim2.new(0, 10, 0, 50)
     contentFrame.BackgroundTransparency = 1
     contentFrame.Parent = mainFrame
-    contentFrame.ClipsDescendants = true  -- ADD THIS LINE to clip overflow
     
-    -- Item ID Input
-    local idLabel = Instance.new("TextLabel")
-    idLabel.Size = UDim2.new(1, 0, 0, 18)
-    idLabel.BackgroundTransparency = 1
-    idLabel.Text = "Item ID (or comma-separated IDs):"
-    idLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
-    idLabel.TextSize = 13
-    idLabel.Font = Enum.Font.Gotham
-    idLabel.TextXAlignment = Enum.TextXAlignment.Left
-    idLabel.Parent = contentFrame
-    
-    local idInput = Instance.new("TextBox")
-    idInput.Name = "IdInput"
-    idInput.Size = UDim2.new(1, 0, 0, 40)
-    idInput.Position = UDim2.new(0, 0, 0, 22)
-    idInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
-    idInput.BackgroundTransparency = 0.3
-    idInput.BorderSizePixel = 0
-    idInput.PlaceholderText = "e.g., 123456 or 123456,789012,345678"
-    idInput.Text = ""
-    idInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-    idInput.TextSize = 14
-    idInput.Font = Enum.Font.Gotham
-    idInput.ClearTextOnFocus = false
-    idInput.Parent = contentFrame
-    
-    local idInputCorner = Instance.new("UICorner")
-    idInputCorner.CornerRadius = UDim.new(0, 6)
-    idInputCorner.Parent = idInput
-    
-    local idInputStroke = Instance.new("UIStroke")
-    idInputStroke.Color = Color3.fromRGB(80, 80, 120)
-    idInputStroke.Thickness = 1
-    idInputStroke.Transparency = 0.6
-    idInputStroke.Parent = idInput
-    
-    -- Category Label
-    local categoryLabel = Instance.new("TextLabel")
-    categoryLabel.Size = UDim2.new(1, 0, 0, 18)
-    categoryLabel.Position = UDim2.new(0, 0, 0, 72)
-    categoryLabel.BackgroundTransparency = 1
-    categoryLabel.Text = "Category:"
-    categoryLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
-    categoryLabel.TextSize = 13
-    categoryLabel.Font = Enum.Font.Gotham
-    categoryLabel.TextXAlignment = Enum.TextXAlignment.Left
-    categoryLabel.Parent = contentFrame
-    
-    -- Category Buttons
-    local function createCategoryButton(name, position)
+    local function createButton(props)
         local btn = Instance.new("TextButton")
-        btn.Name = name .. "Button"
-        btn.Size = position.size
-        btn.Position = position.pos
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+        btn.Size = props.size
+        btn.Position = props.pos
+        btn.BackgroundColor3 = props.color or Color3.fromRGB(40, 40, 60)
         btn.BackgroundTransparency = 0.3
         btn.BorderSizePixel = 0
-        btn.Text = name
-        btn.TextColor3 = Color3.fromRGB(200, 200, 220)
-        btn.TextSize = 13
+        btn.Text = props.text
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.TextSize = props.textSize or 13
         btn.Font = Enum.Font.GothamBold
-        btn.Parent = contentFrame
+        btn.Parent = props.parent or contentFrame
         
         local corner = Instance.new("UICorner")
         corner.CornerRadius = UDim.new(0, 6)
@@ -215,304 +162,178 @@ function GuiService.CreateMainFrame()
         return btn
     end
     
-    local headBtn = createCategoryButton("Head", {size = UDim2.new(0.48, 0, 0, 35), pos = UDim2.new(0, 0, 0, 94)})
-    local torsoBtn = createCategoryButton("Torso", {size = UDim2.new(0.48, 0, 0, 35), pos = UDim2.new(0.52, 0, 0, 94)})
-    local faceBtn = createCategoryButton("Face", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 139)})
-    local shirtBtn = createCategoryButton("Shirt", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 139)})
-    local pantsBtn = createCategoryButton("Pants", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 139)})
+    local function createInput(props)
+        local input = Instance.new("TextBox")
+        input.Size = props.size
+        input.Position = props.pos
+        input.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+        input.BackgroundTransparency = 0.3
+        input.BorderSizePixel = 0
+        input.PlaceholderText = props.placeholder
+        input.Text = ""
+        input.TextColor3 = Color3.fromRGB(255, 255, 255)
+        input.TextSize = 14
+        input.Font = Enum.Font.Gotham
+        input.ClearTextOnFocus = false
+        input.Parent = props.parent or contentFrame
+        
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 6)
+        corner.Parent = input
+        
+        local stroke = Instance.new("UIStroke")
+        stroke.Color = Color3.fromRGB(80, 80, 120)
+        stroke.Thickness = 1
+        stroke.Transparency = 0.6
+        stroke.Parent = input
+        
+        return input
+    end
     
-    -- Apply Button
-    local addBtn = Instance.new("TextButton")
-    addBtn.Name = "AddButton"
-    addBtn.Size = UDim2.new(1, 0, 0, 45)
-    addBtn.Position = UDim2.new(0, 0, 0, 184)
-    addBtn.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
-    addBtn.BackgroundTransparency = 0.2
-    addBtn.BorderSizePixel = 0
-    addBtn.Text = "✓ Apply Item(s)"
-    addBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    addBtn.TextSize = 16
-    addBtn.Font = Enum.Font.GothamBold
-    addBtn.Parent = contentFrame
+    local function createLabel(text, yPos)
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 0, 18)
+        label.Position = UDim2.new(0, 0, 0, yPos)
+        label.BackgroundTransparency = 1
+        label.Text = text
+        label.TextColor3 = Color3.fromRGB(180, 180, 220)
+        label.TextSize = 13
+        label.Font = Enum.Font.Gotham
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = contentFrame
+        return label
+    end
     
-    local addBtnCorner = Instance.new("UICorner")
-    addBtnCorner.CornerRadius = UDim.new(0, 6)
-    addBtnCorner.Parent = addBtn
+    -- Item ID Input (Y: 0)
+    createLabel("Item ID (or comma-separated IDs):", 0)
+    local idInput = createInput({
+        size = UDim2.new(1, 0, 0, 40),
+        pos = UDim2.new(0, 0, 0, 22),
+        placeholder = "e.g., 123456 or 123456,789012,345678"
+    })
     
-    -- Special Effects Section
-    local specialLabel = Instance.new("TextLabel")
-    specialLabel.Size = UDim2.new(1, 0, 0, 20)
-    specialLabel.Position = UDim2.new(0, 0, 0, 239)
-    specialLabel.BackgroundTransparency = 1
-    specialLabel.Text = "🎭 Special Effects"
+    -- Categories (Y: 72)
+    createLabel("Category:", 72)
+    local headBtn = createButton({size = UDim2.new(0.48, 0, 0, 35), pos = UDim2.new(0, 0, 0, 94), text = "Head"})
+    local torsoBtn = createButton({size = UDim2.new(0.48, 0, 0, 35), pos = UDim2.new(0.52, 0, 0, 94), text = "Torso"})
+    local faceBtn = createButton({size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 139), text = "Face"})
+    local shirtBtn = createButton({size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 139), text = "Shirt"})
+    local pantsBtn = createButton({size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 139), text = "Pants"})
+    
+    -- Apply Button (Y: 184)
+    local addBtn = createButton({
+        size = UDim2.new(1, 0, 0, 45),
+        pos = UDim2.new(0, 0, 0, 184),
+        text = "✓ Apply Item(s)",
+        textSize = 16,
+        color = Color3.fromRGB(80, 200, 120)
+    })
+    
+    -- Special Effects (Y: 239)
+    local specialLabel = createLabel("🎭 Special Effects", 239)
     specialLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
     specialLabel.TextSize = 14
     specialLabel.Font = Enum.Font.GothamBold
-    specialLabel.TextXAlignment = Enum.TextXAlignment.Left
-    specialLabel.Parent = contentFrame
     
-    local headlessBtn = createCategoryButton("Headless", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 263)})
-    headlessBtn.Parent = contentFrame
+    local headlessBtn = createButton({size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 263), text = "Headless"})
+    local korbloxRBtn = createButton({size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 263), text = "Korblox R"})
+    local korbloxLBtn = createButton({size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 263), text = "Korblox L"})
     
-    local korbloxRBtn = createCategoryButton("Korblox R", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 263)})
-    korbloxRBtn.Parent = contentFrame
+    -- Avatar Copier (Y: 308)
+    local avatarLabel = createLabel("👤 Copy Avatar", 308)
+    avatarLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
+    avatarLabel.TextSize = 14
+    avatarLabel.Font = Enum.Font.GothamBold
     
-    local korbloxLBtn = createCategoryButton("Korblox L", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 263)})
-    korbloxLBtn.Parent = contentFrame
-
-    -- Avatar Copier Section
-    local avatarCopierLabel = Instance.new("TextLabel")
-    avatarCopierLabel.Size = UDim2.new(1, 0, 0, 20)
-    avatarCopierLabel.Position = UDim2.new(0, 0, 0, 308)
-    avatarCopierLabel.BackgroundTransparency = 1
-    avatarCopierLabel.Text = "👤 Copy Avatar"
-    avatarCopierLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
-    avatarCopierLabel.TextSize = 14
-    avatarCopierLabel.Font = Enum.Font.GothamBold
-    avatarCopierLabel.TextXAlignment = Enum.TextXAlignment.Left
-    avatarCopierLabel.Parent = contentFrame
+    local userIdInput = createInput({
+        size = UDim2.new(0.65, -5, 0, 35),
+        pos = UDim2.new(0, 0, 0, 332),
+        placeholder = "Enter user ID..."
+    })
     
-    local userIdInput = Instance.new("TextBox")
-    userIdInput.Name = "UserIdInput"
-    userIdInput.Size = UDim2.new(0.65, -5, 0, 35)
-    userIdInput.Position = UDim2.new(0, 0, 0, 332)
-    userIdInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
-    userIdInput.BackgroundTransparency = 0.3
-    userIdInput.BorderSizePixel = 0
-    userIdInput.PlaceholderText = "Enter user ID..."
-    userIdInput.Text = ""
-    userIdInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-    userIdInput.TextSize = 14
-    userIdInput.Font = Enum.Font.Gotham
-    userIdInput.ClearTextOnFocus = false
-    userIdInput.Parent = contentFrame
+    local copyAvatarBtn = createButton({
+        size = UDim2.new(0.35, -5, 0, 35),
+        pos = UDim2.new(0.65, 5, 0, 332),
+        text = "📥 Copy",
+        color = Color3.fromRGB(100, 180, 255)
+    })
     
-    local userIdInputCorner = Instance.new("UICorner")
-    userIdInputCorner.CornerRadius = UDim.new(0, 6)
-    userIdInputCorner.Parent = userIdInput
+    -- Clear & View (Y: 377)
+    local clearBtn = createButton({
+        size = UDim2.new(0.48, 0, 0, 35),
+        pos = UDim2.new(0, 0, 0, 377),
+        text = "✕ Clear All",
+        color = Color3.fromRGB(220, 80, 80)
+    })
     
-    local userIdInputStroke = Instance.new("UIStroke")
-    userIdInputStroke.Color = Color3.fromRGB(80, 80, 120)
-    userIdInputStroke.Thickness = 1
-    userIdInputStroke.Transparency = 0.6
-    userIdInputStroke.Parent = userIdInput
+    local viewEquippedBtn = createButton({
+        size = UDim2.new(0.48, 0, 0, 35),
+        pos = UDim2.new(0.52, 0, 0, 377),
+        text = "🎒 Equipped",
+        color = Color3.fromRGB(100, 100, 180)
+    })
     
-    local copyAvatarBtn = Instance.new("TextButton")
-    copyAvatarBtn.Name = "CopyAvatarButton"
-    copyAvatarBtn.Size = UDim2.new(0.35, -5, 0, 35)
-    copyAvatarBtn.Position = UDim2.new(0.65, 5, 0, 332)
-    copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
-    copyAvatarBtn.BackgroundTransparency = 0.2
-    copyAvatarBtn.BorderSizePixel = 0
-    copyAvatarBtn.Text = "📥 Copy"
-    copyAvatarBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    copyAvatarBtn.TextSize = 14
-    copyAvatarBtn.Font = Enum.Font.GothamBold
-    copyAvatarBtn.Parent = contentFrame
+    -- Undo, Favorites, Editor (Y: 422)
+    local undoBtn = createButton({
+        size = UDim2.new(0.31, 0, 0, 35),
+        pos = UDim2.new(0, 0, 0, 422),
+        text = "↶ Undo",
+        color = Color3.fromRGB(150, 100, 200)
+    })
     
-    local copyAvatarBtnCorner = Instance.new("UICorner")
-    copyAvatarBtnCorner.CornerRadius = UDim.new(0, 6)
-    copyAvatarBtnCorner.Parent = copyAvatarBtn
+    local favoritesBtn = createButton({
+        size = UDim2.new(0.31, 0, 0, 35),
+        pos = UDim2.new(0.345, 0, 0, 422),
+        text = "⭐ Favorites",
+        color = Color3.fromRGB(255, 200, 100)
+    })
     
-    -- Clear and View Equipped Buttons
-    local clearBtn = Instance.new("TextButton")
-    clearBtn.Size = UDim2.new(0.48, 0, 0, 35)
-    clearBtn.Position = UDim2.new(0, 0, 0, 377)
-    clearBtn.BackgroundColor3 = Color3.fromRGB(220, 80, 80)
-    clearBtn.BackgroundTransparency = 0.3
-    clearBtn.BorderSizePixel = 0
-    clearBtn.Text = "✕ Clear All"
-    clearBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    clearBtn.TextSize = 14
-    clearBtn.Font = Enum.Font.GothamBold
-    clearBtn.Parent = contentFrame
+    local itemEditorBtn = createButton({
+        size = UDim2.new(0.31, 0, 0, 35),
+        pos = UDim2.new(0.69, 0, 0, 422),
+        text = "⚙️ Editor",
+        color = Color3.fromRGB(100, 200, 200)
+    })
     
-    local clearBtnCorner = Instance.new("UICorner")
-    clearBtnCorner.CornerRadius = UDim.new(0, 6)
-    clearBtnCorner.Parent = clearBtn
-    
-    local viewEquippedBtn = Instance.new("TextButton")
-    viewEquippedBtn.Size = UDim2.new(0.48, 0, 0, 35)
-    viewEquippedBtn.Position = UDim2.new(0.52, 0, 0, 377)
-    viewEquippedBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 180)
-    viewEquippedBtn.BackgroundTransparency = 0.3
-    viewEquippedBtn.BorderSizePixel = 0
-    viewEquippedBtn.Text = "🎒 Equipped"
-    viewEquippedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    viewEquippedBtn.TextSize = 14
-    viewEquippedBtn.Font = Enum.Font.GothamBold
-    viewEquippedBtn.Parent = contentFrame
-    
-    local viewEquippedBtnCorner = Instance.new("UICorner")
-    viewEquippedBtnCorner.CornerRadius = UDim.new(0, 6)
-    viewEquippedBtnCorner.Parent = viewEquippedBtn
-
-   -- Undo and Favorites Buttons
-    local undoBtn = Instance.new("TextButton")
-    undoBtn.Name = "UndoButton"
-    undoBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    undoBtn.Position = UDim2.new(0, 0, 0, 353)
-    undoBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 200)
-    undoBtn.BackgroundTransparency = 0.3
-    undoBtn.BorderSizePixel = 0
-    undoBtn.Text = "↶ Undo"
-    undoBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    undoBtn.TextSize = 14
-    undoBtn.Font = Enum.Font.GothamBold
-    undoBtn.Parent = contentFrame
-    
-    local undoBtnCorner = Instance.new("UICorner")
-    undoBtnCorner.CornerRadius = UDim.new(0, 6)
-    undoBtnCorner.Parent = undoBtn
-    
-    local favoritesBtn = Instance.new("TextButton")
-    favoritesBtn.Name = "FavoritesButton"
-    favoritesBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    favoritesBtn.Position = UDim2.new(0.345, 0, 0, 422)
-    favoritesBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
-    favoritesBtn.BackgroundTransparency = 0.3
-    favoritesBtn.BorderSizePixel = 0
-    favoritesBtn.Text = "⭐ Favorites"
-    favoritesBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    favoritesBtn.TextSize = 14
-    favoritesBtn.Font = Enum.Font.GothamBold
-    favoritesBtn.Parent = contentFrame
-    
-    local favoritesBtnCorner = Instance.new("UICorner")
-    favoritesBtnCorner.CornerRadius = UDim.new(0, 6)
-    favoritesBtnCorner.Parent = favoritesBtn
-    
-    local itemEditorBtn = Instance.new("TextButton")
-    itemEditorBtn.Name = "ItemEditorButton"
-    itemEditorBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    itemEditorBtn.Position = UDim2.new(0.69, 0, 0, 422)
-    itemEditorBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 200)
-    itemEditorBtn.BackgroundTransparency = 0.3
-    itemEditorBtn.BorderSizePixel = 0
-    itemEditorBtn.Text = "⚙️ Editor"
-    itemEditorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    itemEditorBtn.TextSize = 14
-    itemEditorBtn.Font = Enum.Font.GothamBold
-    itemEditorBtn.Parent = contentFrame
-    
-    local itemEditorBtnCorner = Instance.new("UICorner")
-    itemEditorBtnCorner.CornerRadius = UDim.new(0, 6)
-    itemEditorBtnCorner.Parent = itemEditorBtn
-    
-    -- Outfit Management
-local outfitLabel = Instance.new("TextLabel")
-outfitLabel.Size = UDim2.new(1, 0, 0, 20)
-outfitLabel.Position = UDim2.new(0, 0, 0, 467)  -- Keep this
-outfitLabel.BackgroundTransparency = 1
-outfitLabel.Text = "💾 Outfit Management"
-    outfitLabel.Text = "💾 Outfit Management"
+    -- Outfit Management (Y: 467)
+    local outfitLabel = createLabel("💾 Outfit Management", 467)
     outfitLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
     outfitLabel.TextSize = 14
     outfitLabel.Font = Enum.Font.GothamBold
-    outfitLabel.TextXAlignment = Enum.TextXAlignment.Left
-    outfitLabel.Parent = contentFrame
     
-    local outfitInput = Instance.new("TextBox")
-    outfitInput.Name = "OutfitInput"
-    outfitInput.Size = UDim2.new(1, 0, 0, 35)
-    outfitInput.Position = UDim2.new(0, 0, 0, 377)  -- Keep this
-    outfitInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
-    outfitInput.BackgroundTransparency = 0.3
-    outfitInput.BorderSizePixel = 0
-    outfitInput.PlaceholderText = "Outfit name..."
-    outfitInput.Text = ""
-    outfitInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-    outfitInput.TextSize = 14
-    outfitInput.Font = Enum.Font.Gotham
-    outfitInput.ClearTextOnFocus = false
-    outfitInput.Parent = contentFrame
+    local outfitInput = createInput({
+        size = UDim2.new(1, 0, 0, 35),
+        pos = UDim2.new(0, 0, 0, 491),
+        placeholder = "Outfit name..."
+    })
     
-    local outfitInputCorner = Instance.new("UICorner")
-    outfitInputCorner.CornerRadius = UDim.new(0, 6)
-    outfitInputCorner.Parent = outfitInput
+    local saveOutfitBtn = createButton({
+        size = UDim2.new(0.31, 0, 0, 35),
+        pos = UDim2.new(0, 0, 0, 536),
+        text = "Save",
+        color = Color3.fromRGB(80, 150, 220)
+    })
     
-    local outfitInputStroke = Instance.new("UIStroke")
-    outfitInputStroke.Color = Color3.fromRGB(80, 80, 120)
-    outfitInputStroke.Thickness = 1
-    outfitInputStroke.Transparency = 0.6
-    outfitInputStroke.Parent = outfitInput
+    local loadOutfitBtn = createButton({
+        size = UDim2.new(0.31, 0, 0, 35),
+        pos = UDim2.new(0.345, 0, 0, 536),
+        text = "Load",
+        color = Color3.fromRGB(100, 200, 100)
+    })
     
-    local saveOutfitBtn = createCategoryButton("Save", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 536)})
-    saveOutfitBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 220)
-    saveOutfitBtn.Parent = contentFrame
+    local deleteOutfitBtn = createButton({
+        size = UDim2.new(0.31, 0, 0, 35),
+        pos = UDim2.new(0.69, 0, 0, 536),
+        text = "Delete",
+        color = Color3.fromRGB(200, 100, 100)
+    })
     
-    local loadOutfitBtn = createCategoryButton("Load", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 536)})
-    loadOutfitBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-    loadOutfitBtn.Parent = contentFrame
+    -- Saved Outfits (Y: 581)
+    createLabel("📁 Saved Outfits:", 581)
     
-    local deleteOutfitBtn = createCategoryButton("Delete", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 536)})
-    deleteOutfitBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
-    deleteOutfitBtn.Parent = contentFrame
-    
-    -- Outfit Management
-    local outfitLabel = Instance.new("TextLabel")
-    outfitLabel.Size = UDim2.new(1, 0, 0, 20)
-    outfitLabel.Position = UDim2.new(0, 0, 0, 467)
-    outfitLabel.BackgroundTransparency = 1
-    outfitLabel.Text = "💾 Outfit Management"
-    outfitLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
-    outfitLabel.TextSize = 14
-    outfitLabel.Font = Enum.Font.GothamBold
-    outfitLabel.TextXAlignment = Enum.TextXAlignment.Left
-    outfitLabel.Parent = contentFrame
-    
-    local outfitInput = Instance.new("TextBox")
-    outfitInput.Name = "OutfitInput"
-    outfitInput.Size = UDim2.new(1, 0, 0, 35)
-    outfitInput.Position = UDim2.new(0, 0, 0, 491)
-    outfitInput.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
-    outfitInput.BackgroundTransparency = 0.3
-    outfitInput.BorderSizePixel = 0
-    outfitInput.PlaceholderText = "Outfit name..."
-    outfitInput.Text = ""
-    outfitInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-    outfitInput.TextSize = 14
-    outfitInput.Font = Enum.Font.Gotham
-    outfitInput.ClearTextOnFocus = false
-    outfitInput.Parent = contentFrame
-    
-    local outfitInputCorner = Instance.new("UICorner")
-    outfitInputCorner.CornerRadius = UDim.new(0, 6)
-    outfitInputCorner.Parent = outfitInput
-    
-    local outfitInputStroke = Instance.new("UIStroke")
-    outfitInputStroke.Color = Color3.fromRGB(80, 80, 120)
-    outfitInputStroke.Thickness = 1
-    outfitInputStroke.Transparency = 0.6
-    outfitInputStroke.Parent = outfitInput
-    
-    local saveOutfitBtn = createCategoryButton("Save", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0, 0, 0, 467)})
-    saveOutfitBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 220)
-    saveOutfitBtn.Parent = contentFrame
-    
-    local loadOutfitBtn = createCategoryButton("Load", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.345, 0, 0, 467)})
-    loadOutfitBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-    loadOutfitBtn.Parent = contentFrame
-    
-    local deleteOutfitBtn = createCategoryButton("Delete", {size = UDim2.new(0.31, 0, 0, 35), pos = UDim2.new(0.69, 0, 0, 467)})
-    deleteOutfitBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
-    deleteOutfitBtn.Parent = contentFrame
-    
-    -- Saved Outfits List
-    local outfitListLabel = Instance.new("TextLabel")
-    outfitListLabel.Size = UDim2.new(1, 0, 0, 18)
-    outfitListLabel.Position = UDim2.new(0, 0, 0, 581)
-    outfitListLabel.BackgroundTransparency = 1
-    outfitListLabel.Text = "📁 Saved Outfits:"
-    outfitListLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
-    outfitListLabel.TextSize = 13
-    outfitListLabel.Font = Enum.Font.Gotham
-    outfitListLabel.TextXAlignment = Enum.TextXAlignment.Left
-    outfitListLabel.Parent = contentFrame
-
     local outfitScrollFrame = Instance.new("ScrollingFrame")
     outfitScrollFrame.Name = "OutfitScrollFrame"
-    outfitScrollFrame.Size = UDim2.new(1, 0, 0, 150)
+    outfitScrollFrame.Size = UDim2.new(1, 0, 0, 100)
     outfitScrollFrame.Position = UDim2.new(0, 0, 0, 603)
     outfitScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
     outfitScrollFrame.BackgroundTransparency = 0.4
@@ -522,25 +343,43 @@ outfitLabel.Text = "💾 Outfit Management"
     outfitScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     outfitScrollFrame.ClipsDescendants = true
     outfitScrollFrame.Parent = contentFrame
-
+    
     local scrollFrameCorner = Instance.new("UICorner")
     scrollFrameCorner.CornerRadius = UDim.new(0, 6)
     scrollFrameCorner.Parent = outfitScrollFrame
-
+    
     local outfitListLayout = Instance.new("UIListLayout")
     outfitListLayout.SortOrder = Enum.SortOrder.Name
     outfitListLayout.Padding = UDim.new(0, 5)
     outfitListLayout.Parent = outfitScrollFrame
-
-    -- Setup Button Logic
-    GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn, 
-    headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn, 
-    headlessBtn, korbloxRBtn, korbloxLBtn,
-    userIdInput, copyAvatarBtn,
-    undoBtn, favoritesBtn, itemEditorBtn,
-    outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
     
-    -- Make draggable
+    -- Setup Logic
+    GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn, viewEquippedBtn,
+        headBtn, torsoBtn, faceBtn, shirtBtn, pantsBtn,
+        headlessBtn, korbloxRBtn, korbloxLBtn,
+        userIdInput, copyAvatarBtn,
+        undoBtn, favoritesBtn, itemEditorBtn,
+        outfitInput, saveOutfitBtn, loadOutfitBtn, deleteOutfitBtn, outfitScrollFrame)
+    
+    -- Minimize Logic
+    local isMinimized = false
+    minimizeBtn.MouseButton1Click:Connect(function()
+        isMinimized = not isMinimized
+        if isMinimized then
+            contentFrame.Visible = false
+            mainFrame.Size = UDim2.new(0, 450, 0, 45)
+            minimizeBtn.Text = "□"
+        else
+            contentFrame.Visible = true
+            mainFrame.Size = UDim2.new(0, 450, 0, 730)
+            minimizeBtn.Text = "_"
+        end
+    end)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        mainFrame.Visible = false
+    end)
+    
     GuiService.MakeDraggable(titleBar, mainFrame)
 end
 
