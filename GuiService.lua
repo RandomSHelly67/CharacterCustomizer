@@ -535,6 +535,34 @@ function GuiService.SetupMainFrameLogic(contentFrame, idInput, addBtn, clearBtn,
         copyAvatarBtn.Text = "Copying..."
         copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(150, 150, 200)
         
+        -- Copy Avatar Button
+    copyAvatarBtn.MouseButton1Click:Connect(function()
+        local userId = userIdInput.Text
+        if userId == "" then
+            copyAvatarBtn.Text = "Enter ID!"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(220, 100, 100)
+            task.wait(0.5)
+            copyAvatarBtn.Text = "📥 Copy"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+            return
+        end
+        
+        -- DEBUG: Check if AvatarCopierService exists
+        if not GuiService.AvatarCopierService then
+            warn("[GuiService] AvatarCopierService is nil!")
+            copyAvatarBtn.Text = "Service Error!"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(220, 100, 100)
+            task.wait(1)
+            copyAvatarBtn.Text = "📥 Copy"
+            copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(100, 180, 255)
+            return
+        end
+        
+        local acs = GuiService.AvatarCopierService
+        
+        copyAvatarBtn.Text = "Copying..."
+        copyAvatarBtn.BackgroundColor3 = Color3.fromRGB(150, 150, 200)
+        
         local success = acs.CopyAvatar(userId, function(status)
             copyAvatarBtn.Text = status
         end)
