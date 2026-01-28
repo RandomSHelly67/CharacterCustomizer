@@ -447,58 +447,6 @@ outfitLabel.Text = "💾 Outfit Management"
     deleteOutfitBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
     deleteOutfitBtn.Parent = contentFrame
     
--- Undo and Favorites Buttons
-    local undoBtn = Instance.new("TextButton")
-    undoBtn.Name = "UndoButton"
-    undoBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    undoBtn.Position = UDim2.new(0, 0, 0, 353)
-    undoBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 200)
-    undoBtn.BackgroundTransparency = 0.3
-    undoBtn.BorderSizePixel = 0
-    undoBtn.Text = "↶ Undo"
-    undoBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    undoBtn.TextSize = 14
-    undoBtn.Font = Enum.Font.GothamBold
-    undoBtn.Parent = contentFrame
-    
-    local undoBtnCorner = Instance.new("UICorner")
-    undoBtnCorner.CornerRadius = UDim.new(0, 6)
-    undoBtnCorner.Parent = undoBtn
-    
-    local favoritesBtn = Instance.new("TextButton")
-    favoritesBtn.Name = "FavoritesButton"
-    favoritesBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    favoritesBtn.Position = UDim2.new(0.345, 0, 0, 353)
-    favoritesBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
-    favoritesBtn.BackgroundTransparency = 0.3
-    favoritesBtn.BorderSizePixel = 0
-    favoritesBtn.Text = "⭐ Favorites"
-    favoritesBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    favoritesBtn.TextSize = 14
-    favoritesBtn.Font = Enum.Font.GothamBold
-    favoritesBtn.Parent = contentFrame
-    
-    local favoritesBtnCorner = Instance.new("UICorner")
-    favoritesBtnCorner.CornerRadius = UDim.new(0, 6)
-    favoritesBtnCorner.Parent = favoritesBtn
-    
-    local itemEditorBtn = Instance.new("TextButton")
-    itemEditorBtn.Name = "ItemEditorButton"
-    itemEditorBtn.Size = UDim2.new(0.31, 0, 0, 35)
-    itemEditorBtn.Position = UDim2.new(0.69, 0, 0, 353)
-    itemEditorBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 200)
-    itemEditorBtn.BackgroundTransparency = 0.3
-    itemEditorBtn.BorderSizePixel = 0
-    itemEditorBtn.Text = "⚙️ Editor"
-    itemEditorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    itemEditorBtn.TextSize = 14
-    itemEditorBtn.Font = Enum.Font.GothamBold
-    itemEditorBtn.Parent = contentFrame
-    
-    local itemEditorBtnCorner = Instance.new("UICorner")
-    itemEditorBtnCorner.CornerRadius = UDim.new(0, 6)
-    itemEditorBtnCorner.Parent = itemEditorBtn
-    
     -- Outfit Management
     local outfitLabel = Instance.new("TextLabel")
     outfitLabel.Size = UDim2.new(1, 0, 0, 20)
