@@ -15,6 +15,8 @@ local screenGui
 local mainFrame
 local equippedFrame
 
+GuiService.AvatarCopierService = nil
+
 function GuiService.Init(CharacterService, OutfitService, ItemEditorService, AvatarCopierService)
     GuiService.CharacterService = CharacterService
     GuiService.OutfitService = OutfitService
