@@ -760,18 +760,102 @@ updateOutfitList()
 end
 
 function GuiService.CreateEquippedFrame()
-equippedFrame = Instance.new("Frame")
-equippedFrame.Name = "EquippedFrame"
-equippedFrame.Size = UDim2.new(0, 350, 0, 400)
-equippedFrame.Position = UDim2.new(0.5, -175, 0.5, -200)
-equippedFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-equippedFrame.BackgroundTransparency = 0.15
-equippedFrame.BorderSizePixel = 0
-equippedFrame.Visible = false
-equippedFrame.Parent = screenGui
-local equippedFrameCorner = Instance.new("UICorner")
-equippedFrameCorner.CornerRadius = UDim.new(0, 12)
-equippedFrameCorner.Parent = equippedFrame
+    equippedFrame = Instance.new("Frame")
+    equippedFrame.Name = "EquippedFrame"
+    equippedFrame.Size = UDim2.new(0, 350, 0, 400)
+    equippedFrame.Position = UDim2.new(0.5, -175, 0.5, -200)
+    equippedFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+    equippedFrame.BackgroundTransparency = 0.15
+    equippedFrame.BorderSizePixel = 0
+    equippedFrame.Visible = false
+    equippedFrame.Parent = screenGui
+    
+    local equippedFrameCorner = Instance.new("UICorner")
+    equippedFrameCorner.CornerRadius = UDim.new(0, 12)
+    equippedFrameCorner.Parent = equippedFrame
+    
+    local equippedFrameStroke = Instance.new("UIStroke")
+    equippedFrameStroke.Color = Color3.fromRGB(100, 100, 150)
+    equippedFrameStroke.Thickness = 1
+    equippedFrameStroke.Transparency = 0.5
+    equippedFrameStroke.Parent = equippedFrame
+    
+    -- Title Bar
+    local equippedTitleBar = Instance.new("Frame")
+    equippedTitleBar.Size = UDim2.new(1, 0, 0, 45)
+    equippedTitleBar.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+    equippedTitleBar.BackgroundTransparency = 0.2
+    equippedTitleBar.BorderSizePixel = 0
+    equippedTitleBar.Parent = equippedFrame
+    
+    local equippedTitleBarCorner = Instance.new("UICorner")
+    equippedTitleBarCorner.CornerRadius = UDim.new(0, 12)
+    equippedTitleBarCorner.Parent = equippedTitleBar
+    
+    local equippedTitleBarBottom = Instance.new("Frame")
+    equippedTitleBarBottom.Size = UDim2.new(1, 0, 0, 12)
+    equippedTitleBarBottom.Position = UDim2.new(0, 0, 1, -12)
+    equippedTitleBarBottom.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+    equippedTitleBarBottom.BackgroundTransparency = 0.2
+    equippedTitleBarBottom.BorderSizePixel = 0
+    equippedTitleBarBottom.Parent = equippedTitleBar
+    
+    local equippedTitle = Instance.new("TextLabel")
+    equippedTitle.Size = UDim2.new(1, -50, 1, 0)
+    equippedTitle.Position = UDim2.new(0, 15, 0, 0)
+    equippedTitle.BackgroundTransparency = 1
+    equippedTitle.Text = "🎒 Equipped Items"
+    equippedTitle.TextColor3 = Color3.fromRGB(200, 200, 255)
+    equippedTitle.TextSize = 18
+    equippedTitle.Font = Enum.Font.GothamBold
+    equippedTitle.TextXAlignment = Enum.TextXAlignment.Left
+    equippedTitle.Parent = equippedTitleBar
+    
+    local equippedCloseBtn = Instance.new("TextButton")
+    equippedCloseBtn.Size = UDim2.new(0, 35, 0, 35)
+    equippedCloseBtn.Position = UDim2.new(1, -40, 0, 5)
+    equippedCloseBtn.BackgroundColor3 = Color3.fromRGB(220, 80, 80)
+    equippedCloseBtn.BackgroundTransparency = 0.2
+    equippedCloseBtn.BorderSizePixel = 0
+    equippedCloseBtn.Text = "×"
+    equippedCloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    equippedCloseBtn.TextSize = 24
+    equippedCloseBtn.Font = Enum.Font.GothamBold
+    equippedCloseBtn.Parent = equippedTitleBar
+    
+    local equippedCloseBtnCorner = Instance.new("UICorner")
+    equippedCloseBtnCorner.CornerRadius = UDim.new(0, 6)
+    equippedCloseBtnCorner.Parent = equippedCloseBtn
+    
+    -- Scrolling Frame
+    local equippedScrollFrame = Instance.new("ScrollingFrame")
+    equippedScrollFrame.Name = "EquippedScrollFrame"
+    equippedScrollFrame.Size = UDim2.new(1, -20, 1, -65)
+    equippedScrollFrame.Position = UDim2.new(0, 10, 0, 55)
+    equippedScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+    equippedScrollFrame.BackgroundTransparency = 0.4
+    equippedScrollFrame.BorderSizePixel = 0
+    equippedScrollFrame.ScrollBarThickness = 4
+    equippedScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
+    equippedScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    equippedScrollFrame.ClipsDescendants = true
+    equippedScrollFrame.Parent = equippedFrame
+    
+    local equippedScrollCorner = Instance.new("UICorner")
+    equippedScrollCorner.CornerRadius = UDim.new(0, 6)
+    equippedScrollCorner.Parent = equippedScrollFrame
+    
+    local equippedListLayout = Instance.new("UIListLayout")
+    equippedListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    equippedListLayout.Padding = UDim.new(0, 5)
+    equippedListLayout.Parent = equippedScrollFrame
+    
+    equippedCloseBtn.MouseButton1Click:Connect(function()
+        equippedFrame.Visible = false
+    end)
+    
+    GuiService.MakeDraggable(equippedTitleBar, equippedFrame)
+end
 
 local equippedFrameStroke = Instance.new("UIStroke")
 equippedFrameStroke.Color = Color3.fromRGB(100, 100, 150)
