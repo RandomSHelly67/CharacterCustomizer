@@ -4,6 +4,7 @@ local GuiService = {}
 GuiService.CharacterService = nil
 GuiService.OutfitService = nil
 GuiService.ItemEditorService = nil
+GuiService.AvatarCopierService = nil  -- ADD THIS LINE
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
